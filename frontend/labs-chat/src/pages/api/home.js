@@ -1,4 +1,4 @@
-import { Bedrock } from "@langchain/community/llms/bedrock";
+import { Bedrock } from "@langchain/community/llms/bedrock/web";
 
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
@@ -31,7 +31,9 @@ export default async function handler(req, res) {
             chain = new ConversationChain({ llm: model, memory: memory });
         }
 
-        const response = await chain.call({ input });
+        const response = await model.invoke("Human: " +input);
+        console.log(response);
+        // const response = await chain.predict(input);
 
         console.log({input, firstMsg});
 
