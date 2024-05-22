@@ -16,6 +16,7 @@ export default async function handler(req, res) {
         }
 
         if (firstMsg) {
+            // Initialize the chain, it will be reused for subsequent calls
             console.log("initializing chain");
             model = new BedrockChat({
                 model: "anthropic.claude-3-sonnet-20240229-v1:0", // You can also do e.g. "anthropic.claude-v2"
