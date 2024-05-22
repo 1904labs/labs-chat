@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@aws-sdk/credential-provider-node": "^3.577.0",
+    "@heroicons/react": "^2.1.3",
     "@langchain/community": "^0.0.57",
     "@smithy/eventstream-codec": "^2.2.0",
     "aws-sdk": "^2.1622.0",
