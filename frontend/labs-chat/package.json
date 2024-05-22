@@ -14,9 +14,9 @@
     "@smithy/eventstream-codec": "^2.2.0",
     "aws-sdk": "^2.1622.0",
     "langchain": "^0.1.37",
-    "next": "14.2.3",
-    "react": "^18",
-    "react-dom": "^18"
+    "next": "^14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "eslint": "^8",

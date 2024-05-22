@@ -3,9 +3,35 @@ import { BedrockChat } from "@langchain/community/chat_models/bedrock";
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
 
+//import React, { useState } from 'react';
+
 let model;
 let memory;
 let chain;
+
+const APIGatewayURL = "https://pp4l9z4h30.execute-api.us-east-1.amazonaws.com/dev/message-log"
+//const [logResponse, setLogResponse] = useState(null);
+
+const logCommunication = async(userInput, modelResponse) => {
+    const payload = {
+        user_input: userInput,
+        model_response: modelResponse
+    };
+
+    try {
+        const response = await fetch(APIGatewayURL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        //setLogResponse(data);
+    } catch (error) {
+        console.error('Error logging prompt and model response to S3: ', error)
+    }
+};
 
 export default async function handler(req, res) {
     console.log("HERE")
@@ -36,6 +62,7 @@ export default async function handler(req, res) {
 
         console.log({input, firstMsg});
         console.log({ response });
+        logCommunication(input, response);
         return res.status(200).json({ output: response });
     }
     else {
