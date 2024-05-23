@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 
 const MESSAGE_FORMAT = {
+  id: 0,
   speaker: "bot",
   message: "Hello! How can I help you today?",
   date: "[2024-02-20] 4:30pm",
@@ -34,8 +35,9 @@ const ChatWindow = () => {
     new Promise((resolve) => {
       setTimeout(() => {
         const botResponse = {
+          id: chatMessages.length,
           speaker: "bot",
-          message: "This is a fake response!",
+          message: "This is the bot response message",
           date: "[2024-02-20] 4:30pm",
         };
 
@@ -50,6 +52,7 @@ const ChatWindow = () => {
     e.preventDefault();
     const newMessage = {
       ...MESSAGE_FORMAT,
+      id: chatMessages.length,
       speaker: "user",
       message: input,
       date: "[2024-02-20] 4:30pm",
