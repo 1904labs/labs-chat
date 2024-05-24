@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ChatMessage from "./ChatMessage";
+import ChatMessage from "./UserMessage";
+import UserMessage from "./UserMessage";
+import BotMessage from "./BotMessage";
 
 const MESSAGE_FORMAT = {
   id: 0,
@@ -62,20 +64,34 @@ const ChatWindow = () => {
     setInput("");
   };
 
+  const getChatMessage = (message, index) => {
+    if (message.speaker == "user") {
+      return (
+        <UserMessage
+          key={`chat-messages-${message.speaker}-${index}`}
+          speaker={message.speaker}
+          message={message.message}
+          date={message.date}
+        />
+      );
+    } else {
+      return (
+        <BotMessage
+          key={`chat-messages-${message.speaker}-${index}`}
+          speaker={message.speaker}
+          message={message.message}
+          date={message.date}
+        />
+      );
+    }
+  };
+
   return (
     <div className="w-full lg:w-full h-full  2xl:w-2/3 overflow-y-auto bg-white bg-opacity-90">
       <div className="flex flex-grow h-full flex-col justify-between">
         <div className="flex flex-col flex-grow gap-6 p-4 overflow-y-scroll">
           {/* Loop over messages */}
-          {chatMessages.map((message, index) => (
-            <div key={`chat-messages-${message.speaker}-${index}`}>
-              <ChatMessage
-                speaker={message.speaker}
-                message={message.message}
-                date={message.date}
-              />
-            </div>
-          ))}
+          {chatMessages.map((message, index) => getChatMessage(message, index))}
           <div ref={scrollRef}></div>
         </div>
         <div className="p-4 w-10/12 2xl:w-8/12 m-auto">
