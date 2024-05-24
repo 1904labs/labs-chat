@@ -11,9 +11,6 @@ const randomSleepTime = async (min, max) => Math.floor(Math.random() * max) + mi
 const FAKE_DELAY = 300;
 const encoder = new TextEncoder();
 
-const falseApiDelay = async (timeInMs) =>
-  new Promise((resolve) => setTimeout(resolve, timeInMs));
-
 // this is just to simulate the API response
 // we are not actually doing this anyway 
 // edge is required to return a streaming response
@@ -37,7 +34,7 @@ async function* makeIterator() {
   const fakeBotResponse = "This is the bot response message";
   const tokens = splitSentenceIntoTokens(fakeBotResponse);
   for (let i = 0; i < tokens.length; ++i) {
-    await falseApiDelay(FAKE_DELAY, FAKE_DELAY*2);
+    await randomSleepTime(FAKE_DELAY, FAKE_DELAY*2);
     const obj = { token: tokens[i] };
     const jsonObj = JSON.stringify(obj);
     yield encoder.encode(jsonObj);
