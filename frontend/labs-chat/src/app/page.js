@@ -1,11 +1,11 @@
 
-import { BufferMemory } from "langchain/memory";
-import { ConversationChain } from "langchain/chains";
+import ChatWindow from "./components/ChatWindow";
+import Layout from "./components/Layout";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div>"HELLO"</div>
-    </main>
+    <Layout>
+      <ChatWindow/>
+    </Layout>
   );
 }

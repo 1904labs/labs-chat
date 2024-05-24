@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 
-import PromptBox from "../components/promptbox";
+import PromptBox from "../components/PromptBox";
 
 export default function Chat() {
     const [prompt, setPrompt] = useState("");
