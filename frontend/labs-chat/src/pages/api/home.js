@@ -23,7 +23,7 @@ export default async function handler(req, res) {
         if (!input) {
             return res.status(400).json({ error: "Missing input" });
         }
-
+        console.log({input, firstMsg});
         if (firstMsg) {
             console.log("initializing chain");
             model = new BedrockChat({
@@ -36,7 +36,7 @@ export default async function handler(req, res) {
                 },
                 temperature: Number(process.env.MODEL_TEMPERATURE),
               });
-            memory = new BufferMemory();
+            memory = new BufferMemory({ returnMessages: true, memoryKey: "history" });
             chain = new ConversationChain({ 
                 llm: model, 
                 memory: memory, 
@@ -47,7 +47,8 @@ export default async function handler(req, res) {
                 ])
             });
         }
-        const response = await chain.invoke({
+        console.log("calling chain: ", {chain});
+        const response = await chain.call({
             input: input,
           });
 

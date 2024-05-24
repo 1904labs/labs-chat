@@ -17,6 +17,7 @@ const ChatWindow = () => {
   const [input, setInput] = useState("");
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [chatMessages, setChatMessages] = useState([MESSAGE_FORMAT]);
+  const [firstMsg, setFirstMsg] = useState(true);
 
   useEffect(() => {
     // scroll to the bottom of the chat window
@@ -31,23 +32,41 @@ const ChatWindow = () => {
     }
   };
 
-  const asyncBotResponse = (message) => {
+  const asyncBotResponse = async (message) => {
     setLoadingResponse(true);
     // make the api query here
-    new Promise((resolve) => {
-      setTimeout(() => {
-        const botResponse = {
-          id: chatMessages.length,
-          speaker: "bot",
-          message: "This is the bot response message",
-          date: "[2024-02-20] 4:30pm",
-        };
+    try {
+      // Send the prompt to the API
+      const response = await fetch("/api/home", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input: message, firstMsg }),
+      });
+      const responseJson = await response.json();
+      console.log(responseJson.output.response);
+      const botResponse = {
+        id: chatMessages.length, //todo
+        speaker: "bot",
+        message: responseJson.output.response,
+        date: "[2024-02-20] 4:30pm",//todo
+      };
+    // new Promise((resolve) => {
+    //   setTimeout(() => {
+    //     const botResponse = {
+    //       id: chatMessages.length,
+    //       speaker: "bot",
+    //       message: "This is the bot response message",
+    //       date: "[2024-02-20] 4:30pm",
+    //     };
 
         addMessage(botResponse);
         setLoadingResponse(false);
-        resolve();
-      }, 1000);
-    });
+        setFirstMsg(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onMessageSubmitted = (e) => {
