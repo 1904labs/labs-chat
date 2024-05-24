@@ -3,16 +3,6 @@ import { BedrockChat } from "@langchain/community/chat_models/bedrock";
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
 
-import {
-    ChatPromptTemplate,
-  } from "@langchain/core/prompts";
-
-import {
-    AIMessage,
-    HumanMessage,
-    SystemMessage,
-  } from "@langchain/core/messages";
-
 let model;
 let memory;
 let chain;
@@ -36,15 +26,11 @@ export default async function handler(req, res) {
                 },
                 temperature: Number(process.env.MODEL_TEMPERATURE),
               });
-            memory = new BufferMemory({ returnMessages: true, memoryKey: "history" });
+            memory = new BufferMemory();
             chain = new ConversationChain({ 
                 llm: model, 
                 memory: memory, 
                 verbose: true,
-                prompt: ChatPromptTemplate.fromMessages([
-                    ["system", process.env.SYSTEM_PROMPT],
-                    ["user", "{input}"],
-                ])
             });
         }
         console.log("calling chain: ", {chain});
