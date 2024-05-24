@@ -23,9 +23,9 @@ export default async function handler(req, res) {
                 region: "us-east-1",
                 // endpointUrl: "custom.amazonaws.com",
                 credentials: {
-                  accessKeyId: process.env.BEDROCK_ACCESS_KEY,
-                  secretAccessKey: process.env.BEDROCK_SECRET_KEY,
-                  sessionToken: process.env.BEDROCK_SESSION_TOKEN
+                  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                  sessionToken: process.env.AWS_SESSION_TOKEN,
                 },
                 // modelKwargs: {},
               });
