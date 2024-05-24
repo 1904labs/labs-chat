@@ -3,12 +3,21 @@ import { BedrockChat } from "@langchain/community/chat_models/bedrock";
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
 
+import {
+    ChatPromptTemplate,
+  } from "@langchain/core/prompts";
+
+import {
+    AIMessage,
+    HumanMessage,
+    SystemMessage,
+  } from "@langchain/core/messages";
+
 let model;
 let memory;
 let chain;
 
 export default async function handler(req, res) {
-    console.log("HERE")
     if (req.method === "POST") {
         const { input, firstMsg } = req.body;
         if (!input) {
@@ -18,21 +27,29 @@ export default async function handler(req, res) {
         if (firstMsg) {
             console.log("initializing chain");
             model = new BedrockChat({
-                model: "anthropic.claude-3-sonnet-20240229-v1:0", // You can also do e.g. "anthropic.claude-v2"
+                model: process.env.MODEL,
                 region: "us-east-1",
-                // endpointUrl: "custom.amazonaws.com",
                 credentials: {
-                  accessKeyId: process.env.BEDROCK_ACCESS_KEY,
-                  secretAccessKey: process.env.BEDROCK_SECRET_KEY,
-                  sessionToken: process.env.BEDROCK_SESSION_TOKEN
+                  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+                  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+                  sessionToken: process.env.AWS_SESSION_TOKEN
                 },
-                // modelKwargs: {},
+                temperature: Number(process.env.MODEL_TEMPERATURE),
               });
             memory = new BufferMemory();
-            chain = new ConversationChain({ llm: model, memory: memory, verbose: true });
+            chain = new ConversationChain({ 
+                llm: model, 
+                memory: memory, 
+                verbose: true,
+                prompt: ChatPromptTemplate.fromMessages([
+                    ["system", process.env.SYSTEM_PROMPT],
+                    ["user", "{input}"],
+                ])
+            });
         }
-
-        const response = await chain.call({input: input});
+        const response = await chain.invoke({
+            input: input,
+          });
 
         console.log({input, firstMsg});
         console.log({ response });
