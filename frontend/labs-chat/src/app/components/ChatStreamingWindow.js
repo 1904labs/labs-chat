@@ -11,7 +11,7 @@ const MESSAGE_FORMAT = {
   date: "[2024-02-20] 4:30pm",
 };
 
-const ChatWindow = () => {
+const ChatStreamingWindow = () => {
   const scrollRef = useRef(null);
   const [input, setInput] = useState("");
   const [chatHistory, setChatHistory] = useState([MESSAGE_FORMAT]);
@@ -37,11 +37,13 @@ const ChatWindow = () => {
   async function* streamingFetch(url, input) {
     const response = await fetch(url, {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({ input }),
     });
     const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-
+    const decoder = new TextDecoder();
     for (;;) {
       const { done, value } = await reader.read();
       if (done) break;
@@ -49,7 +51,8 @@ const ChatWindow = () => {
       try {
         yield decoder.decode(value);
       } catch (e) {
-        console.warn(e.message);
+        console.log(`error decoding value: ${e.message}`);
+        console.log(JSON.stringify(e));
       }
     }
   }
@@ -59,21 +62,28 @@ const ChatWindow = () => {
 
     // This section simulates the streaming response
     const userMessage = message;
-
     try {
-      const it = streamingFetch("/api/fakeStreamingLlmApi", userMessage);
+      const it = streamingFetch("/api/streaming-llm", userMessage);
 
+      const totalResponse = [];
       for await (let value of it) {
         try {
           const chunk = JSON.parse(value);
-          console.log(`chunk received: ${chunk.token}`);
-          setBotResponse((prevResp) => [...prevResp, chunk.token]);
+          // this is specific response 
+          // to the model.stream call for 
+          // langchain. If we were to use a chain the 
+          // response structure would probably be different
+          // or we could at least manipulate it ourselves 
+          // on the API side
+          const { kwargs } = chunk;
+          const { content } = kwargs;
+          totalResponse.push(content);
+          setBotResponse((prevResp) => [...prevResp, content]);
         } catch (e) {
-          console.warn(e.message);
+          console.log(`error parsing chunk: ${e.message}`);
+          console.log(JSON.stringify(e));
         }
       }
-
-      const fakeBotResponse = "This is the bot response message";
 
       // this section simulates once the streaming
       // response is done and we want to add the final response to the
@@ -81,14 +91,15 @@ const ChatWindow = () => {
       const fakeResponse = {
         id: chatHistory.length,
         speaker: "bot",
-        message: fakeBotResponse,
+        message: totalResponse.join(""),
         date: "[2024-02-20] 4:30pm",
       };
 
       addMessageToHistory(fakeResponse);
       setBotResponse("");
     } catch (e) {
-      console.error(e.message);
+      console.log(`error: ${e.message}`);
+      console.log(JSON.stringify(e));
     } finally {
       setLoadingResponse(false);
     }
@@ -150,4 +161,4 @@ const ChatWindow = () => {
   );
 };
 
-export default ChatWindow;
+export default ChatStreamingWindow;
