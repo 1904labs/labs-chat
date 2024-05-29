@@ -7,6 +7,7 @@ import { HumanMessage } from "@langchain/core/messages";
 
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 
+const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const model = new BedrockChat({
   model: process.env.MODEL,
   region: "us-east-1",
@@ -29,10 +30,14 @@ function iteratorToStream(iterator) {
       // into a proper stream format
       const chunk = await iterator.next();
       const strChunkValue = JSON.stringify(chunk.value);
-      const encodedValue = encoder.encode(strChunkValue);
-      const encoded = { ...chunk, value: encodedValue };
+      const stringResponse = { ...chunk, value: strChunkValue };
 
-      const { value, done } = encoded;
+      const { value, done } = stringResponse;
+
+      // classic fake sleep issue to keep multiple chunks
+      // from coming through at the same time lawlz
+      await fakeSleep(10);
+      
       if (done) {
         controller.close();
       } else {
@@ -57,7 +62,7 @@ export default async function handler(req, res) {
     const input = request.input;
     const iteratorBaseChunks = await model.stream([new HumanMessage({ content: input })]);
     const stream = iteratorToStream(iteratorBaseChunks);
-    return new NextResponse(stream);
+    return new Response(stream);
   } catch (error) {
     console.error("Error:", error);
     return new Response(null, { status: 500, statusText: "Internal Server Error" });

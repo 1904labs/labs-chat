@@ -4,11 +4,21 @@ import { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import BotMessage from "./BotMessage";
 
+const sessionId = crypto.randomUUID();
+
+const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const getFormattedDate = () => {
+  const dt = new Date();
+  const formatedDate = `[${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}] ${dt.getHours()}:${dt.getMinutes()}`; //todo
+  return formatedDate;
+}
+
 const MESSAGE_FORMAT = {
   id: 0,
   speaker: "bot",
   message: "Hello! How can I help you today?",
-  date: "[2024-02-20] 4:30pm",
+  date: getFormattedDate(),
 };
 
 const ChatStreamingWindow = () => {
@@ -21,7 +31,7 @@ const ChatStreamingWindow = () => {
   useEffect(() => {
     // scroll to the bottom of the chat window
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [chatHistory]);
+  }, [chatHistory, botResponse]);
 
   const addMessageToHistory = (message, callback) => {
     if (callback) {
@@ -64,7 +74,6 @@ const ChatStreamingWindow = () => {
     const userMessage = message;
     try {
       const it = streamingFetch("/api/streaming-llm", userMessage);
-
       const totalResponse = [];
       for await (let value of it) {
         try {
@@ -88,14 +97,14 @@ const ChatStreamingWindow = () => {
       // this section simulates once the streaming
       // response is done and we want to add the final response to the
       // chat history
-      const fakeResponse = {
-        id: chatHistory.length,
+      const fullMessageStructure = {
+        id: sessionId,
         speaker: "bot",
         message: totalResponse.join(""),
-        date: "[2024-02-20] 4:30pm",
+        date: getFormattedDate(),
       };
 
-      addMessageToHistory(fakeResponse);
+      addMessageToHistory(fullMessageStructure);
       setBotResponse("");
     } catch (e) {
       console.log(`error: ${e.message}`);
@@ -109,12 +118,11 @@ const ChatStreamingWindow = () => {
     e.preventDefault();
     const newMessage = {
       ...MESSAGE_FORMAT,
-      id: chatHistory.length,
+      id: sessionId,
       speaker: "user",
       message: input,
-      date: "[2024-02-20] 4:30pm",
+      date: getFormattedDate(),
     };
-    console.log("adding new message");
     addMessageToHistory(newMessage, asyncBotResponse(input));
     setInput("");
   };
