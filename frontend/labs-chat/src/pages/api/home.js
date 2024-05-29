@@ -2,7 +2,6 @@ import { BedrockChat } from "@langchain/community/chat_models/bedrock";
 
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
-
 import AWS from 'aws-sdk'
 
 import { v4 as uuidv4 } from 'uuid';
@@ -57,7 +56,7 @@ export default async function handler(req, res) {
         if (!input) {
             return res.status(400).json({ error: "Missing input" });
         }
-
+        console.log({input, firstMsg});
         if (firstMsg) {
             console.log("initializing chain");
             model = new BedrockChat({
@@ -75,13 +74,10 @@ export default async function handler(req, res) {
                 llm: model, 
                 memory: memory, 
                 verbose: true,
-                prompt: ChatPromptTemplate.fromMessages([
-                    ["system", process.env.SYSTEM_PROMPT],
-                    ["user", "{input}"],
-                ])
             });
         }
-        const response = await chain.invoke({
+        console.log("calling chain: ", {chain});
+        const response = await chain.call({
             input: input,
           });
 

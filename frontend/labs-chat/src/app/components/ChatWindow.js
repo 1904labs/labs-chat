@@ -5,11 +5,17 @@ import ChatMessage from "./UserMessage";
 import UserMessage from "./UserMessage";
 import BotMessage from "./BotMessage";
 
+const getFormattedDate = () => {
+    const dt = new Date();
+    const formatedDate = `[${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}] ${dt.getHours()}:${dt.getMinutes()}`; //todo
+    return formatedDate;
+}
+
 const MESSAGE_FORMAT = {
   id: 0,
   speaker: "bot",
   message: "Hello! How can I help you today?",
-  date: "[2024-02-20] 4:30pm",
+  date: getFormattedDate(),
 };
 
 const ChatWindow = () => {
@@ -17,6 +23,7 @@ const ChatWindow = () => {
   const [input, setInput] = useState("");
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [chatMessages, setChatMessages] = useState([MESSAGE_FORMAT]);
+  const [firstMsg, setFirstMsg] = useState(true);
 
   useEffect(() => {
     // scroll to the bottom of the chat window
@@ -31,33 +38,46 @@ const ChatWindow = () => {
     }
   };
 
-  const asyncBotResponse = (message) => {
+
+
+  const asyncBotResponse = async (message) => {
     setLoadingResponse(true);
     // make the api query here
-    new Promise((resolve) => {
-      setTimeout(() => {
-        const botResponse = {
-          id: chatMessages.length,
-          speaker: "bot",
-          message: "This is the bot response message",
-          date: "[2024-02-20] 4:30pm",
-        };
-
+    try {
+      // Send the prompt to the API
+      const response = await fetch("/api/home", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input: message, firstMsg }),
+      });
+      const responseJson = await response.json();
+      console.log(responseJson.output.response);
+      const formatedDate = getFormattedDate();
+      console.log({formatedDate});
+      const botResponse = {
+        id: crypto.randomUUID(),
+        speaker: "bot",
+        message: responseJson.output.response,
+        date: formatedDate,
+      };
         addMessage(botResponse);
         setLoadingResponse(false);
-        resolve();
-      }, 1000);
-    });
+        setFirstMsg(false);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const onMessageSubmitted = (e) => {
     e.preventDefault();
     const newMessage = {
       ...MESSAGE_FORMAT,
-      id: chatMessages.length,
+      id: crypto.randomUUID(),
       speaker: "user",
       message: input,
-      date: "[2024-02-20] 4:30pm",
+      date: getFormattedDate(),
     };
     console.log("adding new message");
     addMessage(newMessage, asyncBotResponse(input));
