@@ -1,7 +1,6 @@
 'use client';
 import Navbar from './Navbar';
 import Sidebar from './Sidebar';
-import ChatWindow from './ChatWindow';
 
 export default function Layout({ children }) {
     return (
