@@ -31,11 +31,19 @@ const logCommunication = async(userInput, modelResponse) => {
     const s3 = new AWS.S3();
     const logData = {
         timestamp: new Date().toISOString(),
-        id: uuidv4(),
+        file_id: uuidv4(),
+        model_id: process.env.MODEL,
+        input_tokens: 0,
+        output_tokens: 0,
+        temperature: process.env.MODEL_TEMPERATURE,
+        system_prompt: process.env.SYSTEM_PROMPT,
+        stop_reason: '',
+        error_text: '',
+        conversation_id: '',
         user_input: userInput,
         model_response: modelResponse
     };
-    const logFileName = `logs/${logData.id}.json`
+    const logFileName = `logs/${logData.file_id}.json`
     const params = {
         Bucket: 'labs-chat-data-bucket',
         Key: logFileName,
