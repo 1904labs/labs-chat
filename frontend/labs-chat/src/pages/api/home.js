@@ -2,10 +2,53 @@ import { BedrockChat } from "@langchain/community/chat_models/bedrock";
 
 import { BufferMemory } from "langchain/memory";
 import { ConversationChain } from "langchain/chains";
+import AWS from 'aws-sdk'
+
+import { v4 as uuidv4 } from 'uuid';
+
+import {
+    ChatPromptTemplate,
+  } from "@langchain/core/prompts";
+
+import {
+    AIMessage,
+    HumanMessage,
+    SystemMessage,
+  } from "@langchain/core/messages";
 
 let model;
 let memory;
 let chain;
+
+const logCommunication = async(userInput, modelResponse) => {
+    AWS.config.update({
+        accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        sessionToken: process.env.AWS_SESSION_TOKEN,
+        region: 'us-east-1'
+    });
+
+    const s3 = new AWS.S3();
+    const logData = {
+        timestamp: new Date().toISOString(),
+        id: uuidv4(),
+        user_input: userInput,
+        model_response: modelResponse
+    };
+    const logFileName = `logs/${logData.id}.json`
+    const params = {
+        Bucket: 'labs-chat-data-bucket',
+        Key: logFileName,
+        Body: JSON.stringify(logData),
+        ContentType: 'application/json'
+    }
+
+    try {
+        await s3.putObject(params).promise();
+    } catch (error) {
+        console.error('Error logging prompt and model response to S3: ', error);
+    }
+};
 
 export default async function handler(req, res) {
     if (req.method === "POST") {
@@ -40,6 +83,7 @@ export default async function handler(req, res) {
 
         console.log({input, firstMsg});
         console.log({ response });
+        logCommunication(input, response);
         return res.status(200).json({ output: response });
     }
     else {
