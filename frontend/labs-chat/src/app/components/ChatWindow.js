@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ChatMessage from "./UserMessage";
 import UserMessage from "./UserMessage";
 import BotMessage from "./BotMessage";
 
