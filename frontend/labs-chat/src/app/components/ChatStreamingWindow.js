@@ -42,7 +42,7 @@ const ChatStreamingWindow = () => {
   };
 
   async function logResponse(data) {
-    const response = await fetch("/api/logToS3", {
+    const response = await fetch("/api/auditLogsToS3", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -90,7 +90,6 @@ const ChatStreamingWindow = () => {
       for await (let value of it) {
         try {
           const chunk = JSON.parse(value);
-          
           // this is specific response
           // to the model.stream call for
           // langchain. If we were to use a chain the
@@ -100,9 +99,10 @@ const ChatStreamingWindow = () => {
           const { kwargs } = chunk;
           const { response_metadata, content } = kwargs;
 
-          if (response_metadata && response_metadata.model) {
-            metadata.model = response_metadata.model;
-          }
+          metadata = {
+            ...metadata,
+            ...response_metadata,
+          };
 
           if (
             response_metadata &&
@@ -136,12 +136,16 @@ const ChatStreamingWindow = () => {
         date: getFormattedDate(),
       };
 
-      const loggingResponse = await logResponse({
-        ...metadata,
-        id: sessionId,
+      const responseDataForLog = {
+        conversation_id: sessionId,
         user_input: userMessage,
         model_response: modelResponse,
-      });
+        input_tokens: metadata.inputTokenCount,
+        output_tokens: metadata.outputTokenCount,
+        stop_reason: metadata.stop_reason,
+      };
+
+      await logResponse(responseDataForLog);
       addMessageToHistory(fullMessageStructure);
       setBotResponse("");
     } catch (e) {
