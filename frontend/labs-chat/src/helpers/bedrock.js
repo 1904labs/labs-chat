@@ -14,17 +14,34 @@ export const getModel = () =>
     temperature: Number(process.env.MODEL_TEMPERATURE),
   });
 
-export const formatBedrockDataChunk = (chunkValueAsObject) => {
+/**
+ * Reformats the claude 3 style response data chunk into something we can use 
+ * on the frontend based on the default log structure
+ * @param {Object} chunkValueAsObject - An object that can be passed in by an iterator
+ * but it needs to be converted to JSON.parse(JSON.stringify(obj)) first as necessary.
+ * @returns {string} - The formatted bedrock data chunk as a JSON string.
+ */
+export const formatClaude3DataChunk = (chunkValueAsObject) => {
   let finalReformatted = {
     ...DEFAULT_LOG_STRUCTURE,
   };
 
+  // the message always has a kwargs but it may be mostly empty
   const { kwargs } = chunkValueAsObject;
+  // the kwargs always has a response_metadata and content 
+  // but the rest of the values are missing on most of the responses 
+  // except for the first and the last
   const { response_metadata, content } = kwargs;
 
   finalReformatted.content = content;
+
+  // the stop reason only shows up on the first and last messages 
+  // that will pass through this function. We'll try to capture it where we can
   finalReformatted.stop_reason = response_metadata.stop_reason ?? null;
 
+  // the input and output tokens are only available on the first and last messages
+  // and the most accurate tokens are going to be in the invocationMetrics that 
+  // only show up within the last chunk from the claude3 messages
   if (
     response_metadata &&
     response_metadata["amazon-bedrock-invocationMetrics"]
@@ -35,6 +52,9 @@ export const formatBedrockDataChunk = (chunkValueAsObject) => {
     finalReformatted.stop_reason = metrics.stop_reason ?? null;
   }
 
+  // we need to return a string for the ReadableStream to work
+  // this could possibly be controlled or done by the calling
+  // entity at a later time
   return JSON.stringify({
     ...finalReformatted,
   });

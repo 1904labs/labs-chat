@@ -1,6 +1,6 @@
 "use server";
 import { HumanMessage } from "@langchain/core/messages";
-import { formatBedrockDataChunk, getModel } from "@/helpers/bedrock";
+import { formatClaude3DataChunk, getModel } from "@/helpers/bedrock";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -23,7 +23,7 @@ function iteratorToStream(iterator) {
       if (done) {
         controller.close();
       } else {
-        const cleanChunk = formatBedrockDataChunk(JSON.parse(value));
+        const cleanChunk = formatClaude3DataChunk(JSON.parse(value));
         controller.enqueue(cleanChunk);
       }
     },
