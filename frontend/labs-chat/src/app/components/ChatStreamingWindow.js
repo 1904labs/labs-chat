@@ -6,13 +6,13 @@ import BotMessage from "./BotMessage";
 
 const sessionId = crypto.randomUUID();
 
-const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
 const getFormattedDate = () => {
   const dt = new Date();
-  const formatedDate = `[${dt.getFullYear()}-${dt.getMonth()+1}-${dt.getDate()}] ${dt.getHours()}:${dt.getMinutes()}`; //todo
+  const formatedDate = `[${dt.getFullYear()}-${
+    dt.getMonth() + 1
+  }-${dt.getDate()}] ${dt.getHours()}:${dt.getMinutes()}`; //todo
   return formatedDate;
-}
+};
 
 const MESSAGE_FORMAT = {
   id: 0,
@@ -40,6 +40,17 @@ const ChatStreamingWindow = () => {
       setChatHistory((prevMessages) => [...prevMessages, message]);
     }
   };
+
+  async function logResponse(data) {
+    const response = await fetch("/api/logToS3", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return response;
+  }
 
   /**
    * Generator function that streams the response body from a fetch request.
@@ -72,20 +83,39 @@ const ChatStreamingWindow = () => {
 
     // This section simulates the streaming response
     const userMessage = message;
+    let metadata = {};
     try {
       const it = streamingFetch("/api/streaming-llm", userMessage);
       const totalResponse = [];
       for await (let value of it) {
         try {
           const chunk = JSON.parse(value);
-          // this is specific response 
-          // to the model.stream call for 
-          // langchain. If we were to use a chain the 
+          
+          // this is specific response
+          // to the model.stream call for
+          // langchain. If we were to use a chain the
           // response structure would probably be different
-          // or we could at least manipulate it ourselves 
+          // or we could at least manipulate it ourselves
           // on the API side
           const { kwargs } = chunk;
-          const { content } = kwargs;
+          const { response_metadata, content } = kwargs;
+
+          if (response_metadata && response_metadata.model) {
+            metadata.model = response_metadata.model;
+          }
+
+          if (
+            response_metadata &&
+            response_metadata["amazon-bedrock-invocationMetrics"]
+          ) {
+            const metrics =
+              response_metadata["amazon-bedrock-invocationMetrics"];
+            metadata = {
+              ...metadata,
+              ...metrics,
+            };
+          }
+
           totalResponse.push(content);
           setBotResponse((prevResp) => [...prevResp, content]);
         } catch (e) {
@@ -94,16 +124,24 @@ const ChatStreamingWindow = () => {
         }
       }
 
+      const modelResponse = totalResponse.join("");
+
       // this section simulates once the streaming
       // response is done and we want to add the final response to the
       // chat history
       const fullMessageStructure = {
         id: sessionId,
         speaker: "bot",
-        message: totalResponse.join(""),
+        message: modelResponse,
         date: getFormattedDate(),
       };
 
+      const loggingResponse = await logResponse({
+        ...metadata,
+        id: sessionId,
+        user_input: userMessage,
+        model_response: modelResponse,
+      });
       addMessageToHistory(fullMessageStructure);
       setBotResponse("");
     } catch (e) {
