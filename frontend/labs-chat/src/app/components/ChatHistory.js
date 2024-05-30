@@ -5,7 +5,7 @@ import ChatHistoryListItem from "./ChatHistoryListItem";
 
 const ChatHistory = ({ forceDisable }) => {
   return (
-    <div className={`flex flex-col flex-grow p-4 ${forceDisable ? "opacity-30 pointer-events-none" : ""}`} >
+    <div className={`flex flex-col flex-grow p-4 ${forceDisable && "opacity-30 pointer-events-none"}`} >
       <div className="flex items-center border-b pb-2 mb-4">
         <ChevronDownIcon className="h-5 w-5 mr-2 text-white stroke-white stroke-2" />
         <h2 className="text-xs text-white">Date Modified</h2>
