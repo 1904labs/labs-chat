@@ -12,6 +12,7 @@ AWS.config.update({
   sessionToken: process.env.AWS_SESSION_TOKEN,
   region: 'us-east-1'
 });
+const S3_Conn = new AWS.S3();
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ['id', 'user_input', 'model_response'];
@@ -32,7 +33,6 @@ const logCommunication = async(args) => {
       throw new Error(`Missing required fields: ${REQUIRED_FIELDS.filter(field => !args.hasOwnProperty(field)).join(', ')}`);
     }
     
-    const s3 = new AWS.S3();
     const data_id = uuidv4();
     const logData = {
         timestamp: new Date().toISOString(),
@@ -46,7 +46,7 @@ const logCommunication = async(args) => {
         ContentType: 'application/json'
     }
 
-    await s3.putObject(params).promise();
+    await S3_Conn.putObject(params).promise();
 };
 
 /**
