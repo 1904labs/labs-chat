@@ -1,36 +1,8 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
-import { v4 as uuidv4 } from "uuid";
-
-/**
- * Import the required fields for the communication data
- * only do this once at the top of the file
- * may be worth moving this to a separate file
- * and importing it where needed
- */
-AWS.config.update({
-  accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-  sessionToken: process.env.AWS_SESSION_TOKEN,
-  region: "us-east-1",
-});
-const S3_Conn = new AWS.S3();
-
-// Default log structure for audit logs.
-const DEFAULT_LOG_STRUCTURE = {
-  timestamp: null,
-  chat_transaction_id: null,
-  model_id: process.env.MODEL,
-  input_tokens: 0,
-  output_tokens: 0,
-  temperature: process.env.MODEL_TEMPERATURE,
-  system_prompt: process.env.SYSTEM_PROMPT,
-  stop_reason: null,
-  error_text: null,
-  conversation_id: null,
-  user_input: null,
-  model_response: null,
-};
+import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
+import { getFormattedDateForLogs } from "@/helpers/dates";
+import { S3_Conn } from "@/helpers/aws";
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
@@ -46,7 +18,6 @@ const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
  * @throws {Error} - If any of the required fields are missing.
  */
 const logCommunication = async (args) => {
-
   // Quick check if any of the required fields are missing
   if (!REQUIRED_FIELDS.every((field) => args.hasOwnProperty(field))) {
     throw new Error(
@@ -58,19 +29,19 @@ const logCommunication = async (args) => {
 
   // these are the fields we're going to use to log the data
   const { conversation_id, user_input, model_response, ...rest } = args;
-  
+
   // generate a unique id for the data
-  const data_id = uuidv4();
+  const data_id = crypto.randomUUID();
 
   // create the log object
   const logData = {
     ...DEFAULT_LOG_STRUCTURE,
+    ...rest,
     chat_transaction_id: data_id,
-    timestamp: new Date().toISOString(),
+    timestamp: getFormattedDateForLogs(),
     conversation_id,
     user_input,
     model_response,
-    ...rest,
   };
 
   const logFileName = `logs/${data_id}.json`;

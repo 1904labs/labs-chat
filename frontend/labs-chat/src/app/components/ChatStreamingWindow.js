@@ -3,22 +3,14 @@
 import { useEffect, useRef, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import BotMessage from "./BotMessage";
-
-const sessionId = crypto.randomUUID();
-
-const getFormattedDate = () => {
-  const dt = new Date();
-  const formatedDate = `[${dt.getFullYear()}-${
-    dt.getMonth() + 1
-  }-${dt.getDate()}] ${dt.getHours()}:${dt.getMinutes()}`; //todo
-  return formatedDate;
-};
+import sessionId from "@/helpers/sessionId";
+import { getFormattedDateForUI } from "@/helpers/dates";
 
 const MESSAGE_FORMAT = {
   id: 0,
   speaker: "bot",
   message: "Hello! How can I help you today?",
-  date: getFormattedDate(),
+  date: getFormattedDateForUI(),
 };
 
 const ChatStreamingWindow = () => {
@@ -90,30 +82,12 @@ const ChatStreamingWindow = () => {
       for await (let value of it) {
         try {
           const chunk = JSON.parse(value);
-          // this is specific response
-          // to the model.stream call for
-          // langchain. If we were to use a chain the
-          // response structure would probably be different
-          // or we could at least manipulate it ourselves
-          // on the API side
-          const { kwargs } = chunk;
-          const { response_metadata, content } = kwargs;
+          const { content, ...rest } = chunk;
 
+          // add to metadata, we don't need the content
           metadata = {
             ...metadata,
-            ...response_metadata,
-          };
-
-          if (
-            response_metadata &&
-            response_metadata["amazon-bedrock-invocationMetrics"]
-          ) {
-            const metrics =
-              response_metadata["amazon-bedrock-invocationMetrics"];
-            metadata = {
-              ...metadata,
-              ...metrics,
-            };
+            ...rest
           }
 
           totalResponse.push(content);
@@ -133,16 +107,14 @@ const ChatStreamingWindow = () => {
         id: sessionId,
         speaker: "bot",
         message: modelResponse,
-        date: getFormattedDate(),
+        date: getFormattedDateForUI(),
       };
 
       const responseDataForLog = {
+        ...metadata,
         conversation_id: sessionId,
         user_input: userMessage,
         model_response: modelResponse,
-        input_tokens: metadata.inputTokenCount,
-        output_tokens: metadata.outputTokenCount,
-        stop_reason: metadata.stop_reason,
       };
 
       await logResponse(responseDataForLog);
@@ -163,7 +135,7 @@ const ChatStreamingWindow = () => {
       id: sessionId,
       speaker: "user",
       message: input,
-      date: getFormattedDate(),
+      date: getFormattedDateForUI(),
     };
     addMessageToHistory(newMessage, asyncBotResponse(input));
     setInput("");
