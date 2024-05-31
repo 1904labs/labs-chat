@@ -1,4 +1,5 @@
 "use server";
+import { BedrockRuntimeClient, BedrockeRuntimeClient, InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { BedrockChat } from "@langchain/community/chat_models/bedrock";
 import { ConversationChain } from "langchain/chains";
 import { BufferMemory } from "langchain/memory";
@@ -8,6 +9,15 @@ import { HumanMessage } from "@langchain/core/messages";
 import { ChatPromptTemplate } from "@langchain/core/prompts";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const bedrockConfig = {
+  region: "us-east-1",
+  credentials: {
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+    sessionToken: process.env.AWS_SESSION_TOKEN,
+  }
+};
+const bedrockClient = new BedrockRuntimeClient(bedrockConfig);
 const model = new BedrockChat({
   model: process.env.MODEL,
   region: "us-east-1",
@@ -59,9 +69,25 @@ export default async function handler(req, res) {
 
   try {
     const request = await req.json();    
-    const input = request.input;
-    const iteratorBaseChunks = await model.stream([new HumanMessage({ content: input })]);
-    const stream = iteratorToStream(iteratorBaseChunks);
+    const input = {role: "user", content: request.input};
+    const body = {
+      anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
+      max_tokens: 4096, // same as above
+      system: process.env.SYSTEM_PROMPT,
+      messages: [input],
+      temperature: parseFloat(process.env.MODEL_TEMPERATURE),
+    };
+    const jsonBody = JSON.stringify(body);
+    const encodedBody = new TextEncoder().encode(jsonBody)
+    const invokeInput = {
+      body: encodedBody,
+      contentType: "application/json",
+      accept: "application/json",
+      modelId: process.env.MODEL,
+    };
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/command/InvokeModelWithResponseStreamCommand/
+    const bedrockCommand = new InvokeModelWithResponseStreamCommand(invokeInput);
+    const stream = await bedrockClient.send(bedrockCommand);
     return new Response(stream);
   } catch (error) {
     console.error("Error:", error);
