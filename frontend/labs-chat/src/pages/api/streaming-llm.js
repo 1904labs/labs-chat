@@ -1,6 +1,7 @@
 "use server";
 import { HumanMessage } from "@langchain/core/messages";
 import { formatClaude3DataChunk, getModel } from "@/helpers/bedrock";
+import { Memory } from "@/helpers/memory";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -21,41 +22,45 @@ function iteratorToStream(iterator) {
       await fakeSleep(10);
 
       if (done) {
-        // todo: append the final message to the context with ai prefix
-        add_ai_message(ai_stream);
+        // append the final message to the context with ai prefix
+        memory.addAIMessage();
         // reset the ai stream
-        ai_stream = "";
+        memory.clearAIStream();
 
         controller.close();
       } else {
-        // append the chunk to the ai stream
         const cleanChunk = formatClaude3DataChunk(JSON.parse(value));
+        
+        // append the chunk to the ai stream accumulator
         const valueString = JSON.parse(cleanChunk);
-        accumulate_ai_stream(valueString.content);
+        if (valueString.content) {
+          memory.accumulateAIStream(valueString.content);
+        }
+
         controller.enqueue(cleanChunk);
       }
     },
   });
 }
 
-const human_prefix = "Human: ";
-const ai_prefix = "AI: ";
-let history = "";
-add_human_message = (message) => {
-  // potentially limit context size
-  history += human_prefix + message + "\n\n";
-}
-add_ai_message = (message) => {
-  // potentially limit context size
-  history += ai_prefix + message + "\n\n";
-}
-let ai_stream = "";
-accumulate_ai_stream = (chunk) => {
-  ai_stream += chunk;
-}
+// const human_prefix = "Human: ";
+// const ai_prefix = "AI: ";
+// let history = "";
+// add_human_message = (message) => {
+//   // potentially limit context size
+//   history += human_prefix + message + "\n\n";
+// }
+// add_ai_message = (message) => {
+//   // potentially limit context size
+//   history += ai_prefix + message + "\n\n";
+// }
+// let ai_stream = "";
+// accumulate_ai_stream = (chunk) => {
+//   ai_stream += chunk;
+// }
 
 
-
+const memory = new Memory(true)
 
 // this is just to simulate the API response
 // we are not actually doing this anyway
@@ -73,13 +78,11 @@ export default async function handler(req, res) {
     //append the human message to the context
 
     const input = request.input;
-    add_human_message(input);
-    console.log("input:", input);
-    console.log("history:", history);
+    memory.addHumanMessage(input);
 
     const iteratorBaseChunks = await getModel().stream([
-      // todo pass in entire context, with a human prefix
-      new HumanMessage({ content: history }),
+      // fix after removal of Langchain HumanMessage
+      new HumanMessage({ content: memory.history }),
     ]);
     const stream = iteratorToStream(iteratorBaseChunks);
     return new Response(stream);
