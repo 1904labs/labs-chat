@@ -39,10 +39,8 @@ function iteratorToStream(iterator) {
       // stringified or encoded. we need to do both to put them 
       // into a proper stream format
       const chunk = await iterator.next();
-      const strChunkValue = JSON.stringify(chunk.value);
-      const stringResponse = { ...chunk, value: strChunkValue };
 
-      const { value, done } = stringResponse;
+      const { value, done } = chunk;
 
       // classic fake sleep issue to keep multiple chunks
       // from coming through at the same time lawlz
@@ -55,6 +53,12 @@ function iteratorToStream(iterator) {
       }
     },
   });
+}
+
+async function* makeIterator(stream) {
+  for await (let item of stream.body){
+    yield item.chunk.bytes;
+  }
 }
 
 // this is just to simulate the API response
@@ -88,7 +92,9 @@ export default async function handler(req, res) {
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/command/InvokeModelWithResponseStreamCommand/
     const bedrockCommand = new InvokeModelWithResponseStreamCommand(invokeInput);
     const stream = await bedrockClient.send(bedrockCommand);
-    return new Response(stream);
+    const iterator = makeIterator(stream);
+    const iteratorStream = iteratorToStream(iterator);
+    return new Response(iteratorStream);
   } catch (error) {
     console.error("Error:", error);
     return new Response(null, { status: 500, statusText: "Internal Server Error" });

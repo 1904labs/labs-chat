@@ -56,10 +56,12 @@ const ChatStreamingWindow = () => {
     const decoder = new TextDecoder();
     for (;;) {
       const { done, value } = await reader.read();
+
       if (done) break;
 
       try {
-        yield decoder.decode(value);
+        const decodedValue = decoder.decode(value);
+        yield decodedValue;
       } catch (e) {
         console.log(`error decoding value: ${e.message}`);
         console.log(JSON.stringify(e));
@@ -78,16 +80,26 @@ const ChatStreamingWindow = () => {
       for await (let value of it) {
         try {
           const chunk = JSON.parse(value);
-          // this is specific response 
-          // to the model.stream call for 
-          // langchain. If we were to use a chain the 
-          // response structure would probably be different
-          // or we could at least manipulate it ourselves 
-          // on the API side
-          const { kwargs } = chunk;
-          const { content } = kwargs;
-          totalResponse.push(content);
-          setBotResponse((prevResp) => [...prevResp, content]);
+          // These chunk values match the messages api for anthropic: https://docs.anthropic.com/en/api/messages-streaming#basic-streaming-request 
+
+          const { type } = chunk;
+          switch (type) {
+            case "content_block_delta":
+              const { delta } = chunk;
+              const content = delta.text;
+              console.log(`content: ${content}`);
+              totalResponse.push(content);
+              setBotResponse((prevResp) => [...prevResp, content]);
+              break;
+            case "message_delta": 
+              //const { delta } = chunk;
+              //const stopReason = delta.stop_reason;
+              break;
+            case "message_stop":
+              const { "amazon-bedrock-invocationMetrics": invocationMetrics } = chunk;
+              const { inputTokenCount, outputTokenCount} = invocationMetrics;
+              break;
+          }
         } catch (e) {
           console.log(`error parsing chunk: ${e.message}`);
           console.log(JSON.stringify(e));
