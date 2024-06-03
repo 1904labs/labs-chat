@@ -5,6 +5,9 @@ import { Memory } from "@/helpers/memory";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// create a memory object to store the context for the conversation
+const memory = new Memory(true)
+
 function iteratorToStream(iterator) {
   return new ReadableStream({
     async pull(controller) {
@@ -22,7 +25,7 @@ function iteratorToStream(iterator) {
       await fakeSleep(10);
 
       if (done) {
-        // append the final message to the context with ai prefix
+        // append the final message to the context
         memory.addAIMessage();
         // reset the ai stream
         memory.clearAIStream();
@@ -44,7 +47,6 @@ function iteratorToStream(iterator) {
   });
 }
 
-const memory = new Memory(true)
 
 // this is just to simulate the API response
 // we are not actually doing this anyway
