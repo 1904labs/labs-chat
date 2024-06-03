@@ -41,6 +41,10 @@ export const formatClaude3DataChunk = (chunkValueAsObject) => {
       finalReformatted.input_tokens = inputTokenCount;
       finalReformatted.output_tokens = outputTokenCount;
       break;
+    case "error":
+      const { error } = chunkValueAsObject;
+      finalReformatted.error_text = `${error.type}: ${error.message}`;
+      break;
   }
 
   // we need to return a string for the ReadableStream to work
