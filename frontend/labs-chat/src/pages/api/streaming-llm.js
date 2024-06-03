@@ -29,6 +29,7 @@ function iteratorToStream(iterator) {
 
         controller.close();
       } else {
+        // Format the chunk to be a valid JSON string
         const cleanChunk = formatClaude3DataChunk(JSON.parse(value));
         
         // append the chunk to the ai stream accumulator
@@ -42,23 +43,6 @@ function iteratorToStream(iterator) {
     },
   });
 }
-
-// const human_prefix = "Human: ";
-// const ai_prefix = "AI: ";
-// let history = "";
-// add_human_message = (message) => {
-//   // potentially limit context size
-//   history += human_prefix + message + "\n\n";
-// }
-// add_ai_message = (message) => {
-//   // potentially limit context size
-//   history += ai_prefix + message + "\n\n";
-// }
-// let ai_stream = "";
-// accumulate_ai_stream = (chunk) => {
-//   ai_stream += chunk;
-// }
-
 
 const memory = new Memory(true)
 
@@ -76,12 +60,9 @@ export default async function handler(req, res) {
     const request = await req.json();
 
     //append the human message to the context
-
-    const input = request.input;
-    memory.addHumanMessage(input);
+    memory.addHumanMessage(request.input);
 
     const iteratorBaseChunks = await getModel().stream([
-      // fix after removal of Langchain HumanMessage
       new HumanMessage({ content: memory.history }),
     ]);
     const stream = iteratorToStream(iteratorBaseChunks);
