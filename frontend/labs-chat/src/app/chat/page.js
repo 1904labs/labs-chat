@@ -6,7 +6,7 @@ import PromptBox from "../components/PromptBox";
 export default function Chat() {
     const [prompt, setPrompt] = useState("");
     const [message, setMessage] = useState("DEFAULT");
-    let firstMsg = true
+    const [firstMsg, setFirstMsg] = useState(true);
 
     useEffect(() => {
         if (prompt && prompt !== "") {
@@ -27,6 +27,7 @@ export default function Chat() {
               const responseJson = await response.json();
               console.log(responseJson.output.response);
               setMessage(responseJson.output.response);
+              setFirstMsg(false);
           } catch (error) {
             console.error(error);
           }

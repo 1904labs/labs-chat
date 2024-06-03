@@ -9,7 +9,7 @@ export class Memory {
     }
 
      addHumanMessage (message) {
-        // todo: add a limit to the context size
+        // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding human message: ${message}`);
         }
@@ -17,7 +17,7 @@ export class Memory {
     }
 
     addAIMessage = function () {
-        // todo: add a limit to the context size
+        // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding AI message: ${this.ai_stream}`);
         }
