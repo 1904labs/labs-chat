@@ -78,46 +78,61 @@ const ChatStreamingWindow = () => {
     let metadata = {};
     try {
       const it = streamingFetch("/api/streaming-llm", userMessage);
-      const totalResponse = [];
+      const chatTransactions = [];
       for await (let value of it) {
         try {
-          const chunk = JSON.parse(value);
-          const { content, ...rest } = chunk;
+          const chatTransaction = JSON.parse(value);
 
-          // add to metadata, we don't need the content
-          metadata = {
-            ...metadata,
-            ...rest
-          }
-
-          totalResponse.push(content);
-          setBotResponse((prevResp) => [...prevResp, content]);
+          chatTransactions.push(chatTransaction);
+          setBotResponse((prevResp) => [...prevResp, chatTransaction.model_response]);
         } catch (e) {
           console.log(`error parsing chunk: ${e.message}`);
           console.log(JSON.stringify(e));
         }
       }
 
-      const modelResponse = totalResponse.join("");
+      const finalChatTransaction = {
+        ...chatTransactions[0],// Initialize using the first entry
+        input_tokens: 0,
+        output_tokens:0,
+        user_input: userMessage, // populate values from settings and input
+        system_prompt: process.env.SYSTEM_PROMPT,
+        temperature: process.env.MODEL_TEMPERATURE,
+        model_response: "",
+      }
 
+      for (let i = 0; i < chatTransactions.length; i++){
+        const chatTransaction = chatTransactions[i];
+        
+        // add input and output tokens
+        finalChatTransaction.input_tokens += chatTransaction.input_tokens ?? 0;
+        finalChatTransaction.output_tokens += chatTransaction.output_tokens ?? 0;
+
+        // concat text from the model_response
+        if (chatTransaction.model_response){
+          finalChatTransaction.model_response += chatTransaction.model_response;
+        }
+
+        // use the last values for stop_reason and error_text
+        if (chatTransaction.stop_reason) {
+          finalChatTransaction.stop_reason = chatTransaction.stop_reason;
+        }
+        if (chatTransaction.error_text) {
+          finalChatTransaction.error_text = chatTransaction.error_text;
+        }
+      }
+      
       // this section simulates once the streaming
       // response is done and we want to add the final response to the
       // chat history
       const fullMessageStructure = {
         id: sessionId,
         speaker: "bot",
-        message: modelResponse,
+        message: finalChatTransaction.model_response,
         date: getFormattedDateForUI(),
       };
 
-      const responseDataForLog = {
-        ...metadata,
-        conversation_id: sessionId,
-        user_input: userMessage,
-        model_response: modelResponse,
-      };
-
-      await logResponse(responseDataForLog);
+      await logResponse(finalChatTransaction);
       addMessageToHistory(fullMessageStructure);
       setBotResponse("");
     } catch (e) {
