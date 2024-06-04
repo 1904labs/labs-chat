@@ -101,8 +101,7 @@ const ChatStreamingWindow = () => {
         model_response: "",
       }
 
-      for (let i = 0; i < chatTransactions.length; i++){
-        const chatTransaction = chatTransactions[i];
+      for (let chatTransaction of chatTransactions){
         
         // add input and output tokens
         finalChatTransaction.input_tokens += chatTransaction.input_tokens ?? 0;
