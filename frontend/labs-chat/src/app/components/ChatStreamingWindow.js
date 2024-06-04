@@ -99,6 +99,7 @@ const ChatStreamingWindow = () => {
         system_prompt: process.env.SYSTEM_PROMPT,
         temperature: process.env.MODEL_TEMPERATURE,
         model_response: "",
+        conversation_id: sessionId,
       }
 
       for (let chatTransaction of chatTransactions){
