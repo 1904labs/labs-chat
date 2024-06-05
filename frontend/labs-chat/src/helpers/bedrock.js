@@ -1,18 +1,15 @@
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
-import { BedrockChat } from "@langchain/community/chat_models/bedrock";
+import { BedrockRuntimeClient } from "@aws-sdk/client-bedrock-runtime";
 
-export const getModel = () =>
-  new BedrockChat({
-    model: process.env.MODEL,
+export const getClient = () =>
+  new BedrockRuntimeClient({
     region: "us-east-1",
-    streaming: true,
     credentials: {
       accessKeyId: process.env.AWS_ACCESS_KEY_ID,
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       sessionToken: process.env.AWS_SESSION_TOKEN,
     },
-    temperature: Number(process.env.MODEL_TEMPERATURE),
-  });
+  })
 
 /**
  * Reformats the claude 3 style response data chunk into something we can use 
@@ -26,30 +23,28 @@ export const formatClaude3DataChunk = (chunkValueAsObject) => {
     ...DEFAULT_LOG_STRUCTURE,
   };
 
-  // the message always has a kwargs but it may be mostly empty
-  const { kwargs } = chunkValueAsObject;
-  // the kwargs always has a response_metadata and content 
-  // but the rest of the values are missing on most of the responses 
-  // except for the first and the last
-  const { response_metadata, content } = kwargs;
-
-  finalReformatted.content = content;
-
-  // the stop reason only shows up on the first and last messages 
-  // that will pass through this function. We'll try to capture it where we can
-  finalReformatted.stop_reason = response_metadata.stop_reason ?? null;
-
-  // the input and output tokens are only available on the first and last messages
-  // and the most accurate tokens are going to be in the invocationMetrics that 
-  // only show up within the last chunk from the claude3 messages
-  if (
-    response_metadata &&
-    response_metadata["amazon-bedrock-invocationMetrics"]
-  ) {
-    const metrics = response_metadata["amazon-bedrock-invocationMetrics"];
-    finalReformatted.input_tokens = metrics.inputTokenCount ?? 0;
-    finalReformatted.output_tokens = metrics.outputTokenCount ?? 0;
-    finalReformatted.stop_reason = metrics.stop_reason ?? null;
+  // These chunk values match the messages api for anthropic: https://docs.anthropic.com/en/api/messages-streaming#basic-streaming-request 
+  const { type } = chunkValueAsObject;
+  switch (type) {
+    case "content_block_delta":
+      const { delta: contentDelta } = chunkValueAsObject;
+      const content = contentDelta.text;
+      finalReformatted.model_response = content;
+      break;
+    case "message_delta": 
+      const { delta: messageDelta } = chunkValueAsObject;
+      finalReformatted.stop_reason = messageDelta.stop_reason;
+      break;
+    case "message_stop":
+      const { "amazon-bedrock-invocationMetrics": invocationMetrics } = chunkValueAsObject;
+      const { inputTokenCount, outputTokenCount} = invocationMetrics;
+      finalReformatted.input_tokens = inputTokenCount;
+      finalReformatted.output_tokens = outputTokenCount;
+      break;
+    case "error":
+      const { error } = chunkValueAsObject;
+      finalReformatted.error_text = `${error.type}: ${error.message}`;
+      break;
   }
 
   // we need to return a string for the ReadableStream to work
