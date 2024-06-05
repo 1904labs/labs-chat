@@ -1,11 +1,11 @@
 
 export class Memory {
     constructor(verbose = false) {
-        this.history = "";
+        this.history = [];
         this.ai_stream = "";
         this.verbose = verbose;
-        this.human_prefix = "Human: ";
-        this.ai_prefix = "AI: ";
+        this.human_role = "user";
+        this.ai_role = "assistant";
     }
 
      addHumanMessage (message) {
@@ -13,7 +13,7 @@ export class Memory {
         if (this.verbose) {
             console.log(`Adding human message: ${message}`);
         }
-        this.history += this.human_prefix + message + "\n\n";
+        this.history.push({role: this.human_role, content: message});
     }
 
     addAIMessage = function () {
@@ -21,14 +21,14 @@ export class Memory {
         if (this.verbose) {
             console.log(`Adding AI message: ${this.ai_stream}`);
         }
-        this.history += this.ai_prefix + this.ai_stream + "\n\n";
+        this.history.push({role: this.ai_role, content: this.ai_stream});
     };
 
-    accumulateAIStream = function (chunk) {
+    accumulateAIStream = function (textDelta) {
         if (this.verbose) {
-            console.log(`Accumulating AI stream: ${chunk}`);
+            console.log(`Accumulating AI stream: ${textDelta}`);
         }
-        this.ai_stream += chunk;
+        this.ai_stream += textDelta;
     }
 
     clearAIStream = function () {
