@@ -22,6 +22,8 @@ export class Memory {
             console.log(`Adding AI message: ${this.ai_stream}`);
         }
         this.history.push({role: this.ai_role, content: this.ai_stream});
+        // clear the stream upon committing
+        this.clearAIStream();
     };
 
     accumulateAIStream = function (textDelta) {
