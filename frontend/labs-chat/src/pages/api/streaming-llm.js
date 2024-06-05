@@ -36,8 +36,8 @@ function iteratorToStream(iterator) {
         
         // append the chunk to the ai stream accumulator
         const valueString = JSON.parse(cleanChunk);
-        if (valueString.content) {
-          memory.accumulateAIStream(valueString.content);
+        if (valueString.model_response) {
+          memory.accumulateAIStream(valueString.model_response);
         }
 
         controller.enqueue(cleanChunk);
@@ -65,13 +65,12 @@ export default async function handler(req, res) {
   try {
     const request = await req.json();
     //append the human message to the context
-    memory.addHumanMessage(request.input);
-    const input = {role: "user", content: memory.history};
+    memory.addHumanMessage(request.input)
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
       system: process.env.SYSTEM_PROMPT,
-      messages: [input],
+      messages: memory.history,
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };
     const jsonBody = JSON.stringify(body);
