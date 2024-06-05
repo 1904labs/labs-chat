@@ -25,7 +25,7 @@ function iteratorToStream(iterator) {
 
       if (done) {
         // append the final message to the context
-        memory.addAIMessage();
+        memory.commitAIStream();
         // reset the ai stream
         memory.clearAIStream();
 
