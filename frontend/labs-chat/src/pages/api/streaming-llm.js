@@ -1,6 +1,6 @@
 "use server";
-import { HumanMessage } from "@langchain/core/messages";
-import { formatClaude3DataChunk, getModel } from "@/helpers/bedrock";
+import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
+import { formatClaude3DataChunk, getClient } from "@/helpers/bedrock";
 import { Memory } from "@/helpers/memory";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -16,10 +16,8 @@ function iteratorToStream(iterator) {
       // stringified or encoded. we need to do both to put them
       // into a proper stream format
       const chunk = await iterator.next();
-      const strChunkValue = JSON.stringify(chunk.value);
-      const stringResponse = { ...chunk, value: strChunkValue };
 
-      const { value, done } = stringResponse;
+      const { value, done } = chunk;
 
       // classic fake sleep issue to keep multiple chunks
       // from coming through at the same time lawlz
@@ -34,7 +32,7 @@ function iteratorToStream(iterator) {
         controller.close();
       } else {
         // Format the chunk to be a valid JSON string
-        const cleanChunk = formatClaude3DataChunk(JSON.parse(value));
+        const cleanChunk = formatClaude3DataChunk(JSON.parse(new TextDecoder().decode(value)));
         
         // append the chunk to the ai stream accumulator
         const valueString = JSON.parse(cleanChunk);
@@ -48,6 +46,11 @@ function iteratorToStream(iterator) {
   });
 }
 
+async function* makeIterator(stream) {
+  for await (let item of stream.body){
+    yield item.chunk.bytes;
+  }
+}
 
 // this is just to simulate the API response
 // we are not actually doing this anyway
@@ -61,15 +64,30 @@ export default async function handler(req, res) {
 
   try {
     const request = await req.json();
-
     //append the human message to the context
     memory.addHumanMessage(request.input);
-
-    const iteratorBaseChunks = await getModel().stream([
-      new HumanMessage({ content: memory.history }),
-    ]);
-    const stream = iteratorToStream(iteratorBaseChunks);
-    return new Response(stream);
+    const input = {role: "user", content: memory.history};
+    const body = {
+      anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
+      max_tokens: 4096, // same as above
+      system: process.env.SYSTEM_PROMPT,
+      messages: [input],
+      temperature: parseFloat(process.env.MODEL_TEMPERATURE),
+    };
+    const jsonBody = JSON.stringify(body);
+    const encodedBody = new TextEncoder().encode(jsonBody)
+    const invokeInput = {
+      body: encodedBody,
+      contentType: "application/json",
+      accept: "application/json",
+      modelId: process.env.MODEL,
+    };
+    // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/command/InvokeModelWithResponseStreamCommand/
+    const bedrockCommand = new InvokeModelWithResponseStreamCommand(invokeInput);
+    const stream = await getClient().send(bedrockCommand);
+    const iterator = makeIterator(stream);
+    const iteratorStream = iteratorToStream(iterator);
+    return new Response(iteratorStream);
   } catch (error) {
     console.error("Error:", error);
     return new Response(null, {
