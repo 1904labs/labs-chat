@@ -7,7 +7,7 @@ const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // create a memory object to store the context for the conversation
 // we will need to keep track to which session this applies
-const memory = new Memory(true)
+const memory = new Memory(false)
 
 function iteratorToStream(iterator) {
   return new ReadableStream({
