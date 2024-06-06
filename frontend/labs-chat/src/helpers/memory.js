@@ -8,7 +8,7 @@ export class Memory {
         this.ai_role = "assistant";
     }
 
-     addHumanMessage (message) {
+     addHumanMessage(message) {
         // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding human message: ${message}`);
