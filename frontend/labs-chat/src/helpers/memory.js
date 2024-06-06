@@ -16,7 +16,7 @@ export class Memory {
         this.history.push({role: this.human_role, content: message});
     }
 
-    commitAIStream = function () {
+    commitAIStream() {
         // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding AI message: ${this.ai_stream}`);
