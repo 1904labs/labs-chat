@@ -64,7 +64,6 @@ export default async function handler(req, res) {
     const request = await req.json();
     //append the human message to the context
     memory.addHumanMessage(request.input)
-    console.log(`history: ${JSON.stringify(memory.history)}`);
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
