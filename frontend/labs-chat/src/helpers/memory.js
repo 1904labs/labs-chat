@@ -26,7 +26,7 @@ export class Memory {
         this.clearAIStream();
     };
 
-    accumulateAIStream = function (textDelta) {
+    accumulateAIStream(textDelta) {
         if (this.verbose) {
             console.log(`Accumulating AI stream: ${textDelta}`);
         }
