@@ -33,7 +33,7 @@ export class Memory {
         this.ai_stream += textDelta;
     }
 
-    clearAIStream = function () {
+    clearAIStream() {
         if (this.verbose) {
             console.log(`Clearing AI stream`);
         }
