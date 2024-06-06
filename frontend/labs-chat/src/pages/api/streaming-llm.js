@@ -1,8 +1,13 @@
 "use server";
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { formatClaude3DataChunk, getClient } from "@/helpers/bedrock";
+import { Memory } from "@/helpers/memory";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// create a memory object to store the context for the conversation
+// we will need to keep track to which session this applies
+const memory = new Memory(false)
 
 function iteratorToStream(iterator) {
   return new ReadableStream({
@@ -19,9 +24,20 @@ function iteratorToStream(iterator) {
       await fakeSleep(10);
 
       if (done) {
+        // append the final message to the context
+        memory.commitAIStream();
+
         controller.close();
       } else {
+        // Format the chunk to be a valid JSON string
         const cleanChunk = formatClaude3DataChunk(JSON.parse(new TextDecoder().decode(value)));
+        
+        // append the chunk to the ai stream accumulator
+        const valueString = JSON.parse(cleanChunk);
+        if (valueString.model_response) {
+          memory.accumulateAIStream(valueString.model_response);
+        }
+
         controller.enqueue(cleanChunk);
       }
     },
@@ -46,12 +62,13 @@ export default async function handler(req, res) {
 
   try {
     const request = await req.json();
-    const input = {role: "user", content: request.input};
+    //append the human message to the context
+    memory.addHumanMessage(request.input)
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
       system: process.env.SYSTEM_PROMPT,
-      messages: [input],
+      messages: memory.history,
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };
     const jsonBody = JSON.stringify(body);
