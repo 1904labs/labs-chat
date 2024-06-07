@@ -1,7 +1,6 @@
 
 export class Memory {
     constructor(verbose = false) {
-        this.sessions = {};
         this.history = [];
         this.ai_stream = "";
         this.verbose = verbose;
