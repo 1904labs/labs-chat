@@ -39,7 +39,7 @@ function iteratorToStream(iterator) {
         }
         valueString.system_prompt = memory.getSystemPrompt();
 
-        controller.enqueue(cleanChunk);
+        controller.enqueue(JSON.stringify(valueString));
       }
     },
   });
