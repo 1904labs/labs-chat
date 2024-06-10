@@ -15,11 +15,11 @@ export class Memory {
             session_id: "1234",
             user_id: "test_user",
             timestamp: Date.now(),
-            conversation_s3_link: "s3://",
+            conversation_s3_link: "",
             conversation_history: [],
             conversation_context: {token_size: 0, context: []},
             system_prompt: "",
-            system_prompt_s3_ptr: "s3://",
+            system_prompt_s3_ptr: "", // todo when config is pointing to this location
             session_name: "New Session",
             is_hidden: false,
             ai_stream: ""
