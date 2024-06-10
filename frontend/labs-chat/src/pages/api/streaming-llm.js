@@ -68,7 +68,7 @@ export default async function handler(req, res) {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
       system: process.env.SYSTEM_PROMPT,
-      messages: memory.history,
+      messages: memory.getContext(),
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };
     const jsonBody = JSON.stringify(body);
