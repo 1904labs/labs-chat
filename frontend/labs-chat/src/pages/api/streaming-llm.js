@@ -37,6 +37,7 @@ function iteratorToStream(iterator) {
         if (valueString.model_response) {
           memory.accumulateAIStream(valueString.model_response);
         }
+        valueString.system_prompt = memory.getSystemPrompt();
 
         controller.enqueue(cleanChunk);
       }
@@ -67,7 +68,7 @@ export default async function handler(req, res) {
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
-      system: process.env.SYSTEM_PROMPT,
+      system: memory.getSystemPrompt,
       messages: memory.getContext(),
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };

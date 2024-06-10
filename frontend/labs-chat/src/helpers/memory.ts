@@ -18,7 +18,7 @@ export class Memory {
             conversation_s3_link: "",
             conversation_history: [],
             conversation_context: {token_size: 0, context: []},
-            system_prompt: "",
+            system_prompt: process.env.SYSTEM_PROMPT as string,
             system_prompt_s3_ptr: "", // todo when config is pointing to this location
             session_name: "New Session",
             is_hidden: false,
@@ -131,5 +131,8 @@ export class Memory {
     }
     getContext(): ConversationSegment[] {
         return this.session.conversation_context.context;
+    }
+    getSystemPrompt(): string {
+        return this.session.system_prompt;
     }
 }

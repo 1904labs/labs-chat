@@ -96,7 +96,6 @@ const ChatStreamingWindow = () => {
         input_tokens: 0,
         output_tokens:0,
         user_input: userMessage, // populate values from settings and input
-        system_prompt: process.env.SYSTEM_PROMPT,
         temperature: process.env.MODEL_TEMPERATURE,
         model_response: "",
         conversation_id: sessionId,
