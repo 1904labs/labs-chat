@@ -1,4 +1,4 @@
-type Session = {
+export type Session = {
     session_id: string;
     user_id: string;
     timestamp: number;
@@ -9,29 +9,30 @@ type Session = {
     system_prompt_s3_ptr: string;
     session_name: string;
     is_hidden: boolean;
+    ai_stream: string;
 }
 
-type ConversationSegment = {
+export type ConversationSegment = {
     role: string;
     content: (ConversationContentText | ConversationContentImage)[];
 }
 
-interface ConversationElement extends ConversationSegment {
+export interface ConversationElement extends ConversationSegment {
     timestamp: string;
     current_context: string;
 }
 
-type ConversationContext = {
+export type ConversationContext = {
     token_size: number;
     context: ConversationSegment[];
 }
 
-type ConversationContentText = {
+export type ConversationContentText = {
     type: string;
     text: string;
 }
 
-type ConversationContentImage = {
+export type ConversationContentImage = {
     type: string;
     path: string;
 }
