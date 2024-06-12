@@ -7,7 +7,7 @@ const Navbar = () => {
     return (
         <nav className="bg-white flex items-center justify-between px-4 py-2 drop-shadow-sm shadow-sm">
             <div className="flex items-center justify-start">
-                <Image src={logo} alt="1904labs" width="200" />
+                <Image src={logo} alt="1904labs" width="200" priority/>
             </div>
             <div className="flex items-center">
                 <CogIcon className="h-6 w-6 mr-4" />
