@@ -1,5 +1,3 @@
-"use client";
-
 const BotMessage = ({message = "", date = "" }) => {
   return (
     <div className={`flex flex-col items-start justify-start items`}>

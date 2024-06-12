@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { PlusCircleIcon, ClockIcon } from "@heroicons/react/20/solid";
 import ChatHistory from "./ChatHistory";

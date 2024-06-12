@@ -1,5 +1,3 @@
-"use client";
-
 import UserMessage from "./UserMessage";
 import BotMessage from "./BotMessage";
 

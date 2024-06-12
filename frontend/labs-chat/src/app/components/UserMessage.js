@@ -1,5 +1,3 @@
-"use client";
-
 const UserMessage = ({ speaker = "user", message = "", date = "" }) => {
   return (
     <div className={`flex flex-col items-end justify-end items`}>
