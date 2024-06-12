@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prettier": "prettier --check .",
+    "prettier:fix": "prettier . --write"
   },
   "dependencies": {
     "@aws-sdk/client-bedrock-runtime": "^3.588.0",
@@ -23,7 +25,10 @@
     "@types/react": "18.3.3",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "eslint-config-prettier": "^9.1.0",
     "postcss": "^8",
+    "prettier": "^3.3.2",
+    "prettier-plugin-tailwindcss": "^0.6.3",
     "tailwindcss": "^3.4.1"
   }
 }
