@@ -29,7 +29,7 @@ export class Memory {
         this.ai_role = "assistant";
     }
 
-     addHumanMessage(message) {
+     addHumanMessage(message: string): void {
         // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding human message: ${message}`);
@@ -62,7 +62,7 @@ export class Memory {
         );
     }
 
-    commitAIStream() {
+    commitAIStream(): void {
         // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding AI message: ${this.session.ai_stream}`);
@@ -97,14 +97,14 @@ export class Memory {
         this.clearAIStream();
     };
 
-    accumulateAIStream(textDelta) {
+    accumulateAIStream(textDelta: string): void {
         if (this.verbose) {
             console.log(`Accumulating AI stream: ${textDelta}`);
         }
         this.session.ai_stream += textDelta;
     }
 
-    clearAIStream() {
+    clearAIStream(): void {
         if (this.verbose) {
             console.log(`Clearing AI stream`);
         }
