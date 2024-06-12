@@ -9,10 +9,10 @@ export const getClient = () =>
       secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
       sessionToken: process.env.AWS_SESSION_TOKEN,
     },
-  })
+  });
 
 /**
- * Reformats the claude 3 style response data chunk into something we can use 
+ * Reformats the claude 3 style response data chunk into something we can use
  * on the frontend based on the default log structure
  * @param {Object} chunkValueAsObject - An object that can be passed in by an iterator
  * but it needs to be converted to JSON.parse(JSON.stringify(obj)) first as necessary.
@@ -23,7 +23,7 @@ export const formatClaude3DataChunk = (chunkValueAsObject) => {
     ...DEFAULT_LOG_STRUCTURE,
   };
 
-  // These chunk values match the messages api for anthropic: https://docs.anthropic.com/en/api/messages-streaming#basic-streaming-request 
+  // These chunk values match the messages api for anthropic: https://docs.anthropic.com/en/api/messages-streaming#basic-streaming-request
   const { type } = chunkValueAsObject;
   switch (type) {
     case "content_block_delta":
@@ -31,13 +31,14 @@ export const formatClaude3DataChunk = (chunkValueAsObject) => {
       const content = contentDelta.text;
       finalReformatted.model_response = content;
       break;
-    case "message_delta": 
+    case "message_delta":
       const { delta: messageDelta } = chunkValueAsObject;
       finalReformatted.stop_reason = messageDelta.stop_reason;
       break;
     case "message_stop":
-      const { "amazon-bedrock-invocationMetrics": invocationMetrics } = chunkValueAsObject;
-      const { inputTokenCount, outputTokenCount} = invocationMetrics;
+      const { "amazon-bedrock-invocationMetrics": invocationMetrics } =
+        chunkValueAsObject;
+      const { inputTokenCount, outputTokenCount } = invocationMetrics;
       finalReformatted.input_tokens = inputTokenCount;
       finalReformatted.output_tokens = outputTokenCount;
       break;

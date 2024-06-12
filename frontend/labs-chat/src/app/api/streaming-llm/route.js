@@ -7,7 +7,7 @@ const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 // create a memory object to store the context for the conversation
 // we will need to keep track to which session this applies
-const memory = new Memory(false)
+const memory = new Memory(false);
 
 function iteratorToStream(iterator) {
   return new ReadableStream({
@@ -30,8 +30,10 @@ function iteratorToStream(iterator) {
         controller.close();
       } else {
         // Format the chunk to be a valid JSON string
-        const cleanChunk = formatClaude3DataChunk(JSON.parse(new TextDecoder().decode(value)));
-        
+        const cleanChunk = formatClaude3DataChunk(
+          JSON.parse(new TextDecoder().decode(value)),
+        );
+
         // append the chunk to the ai stream accumulator
         const valueString = JSON.parse(cleanChunk);
         if (valueString.model_response) {
@@ -46,7 +48,7 @@ function iteratorToStream(iterator) {
 }
 
 async function* makeIterator(stream) {
-  for await (let item of stream.body){
+  for await (let item of stream.body) {
     yield item.chunk.bytes;
   }
 }
@@ -60,7 +62,7 @@ export default async function POST(req) {
   try {
     const request = await req.json();
     //append the human message to the context
-    memory.addHumanMessage(request.input)
+    memory.addHumanMessage(request.input);
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
@@ -69,7 +71,7 @@ export default async function POST(req) {
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };
     const jsonBody = JSON.stringify(body);
-    const encodedBody = new TextEncoder().encode(jsonBody)
+    const encodedBody = new TextEncoder().encode(jsonBody);
     const invokeInput = {
       body: encodedBody,
       contentType: "application/json",
@@ -77,7 +79,9 @@ export default async function POST(req) {
       modelId: process.env.MODEL,
     };
     // https://docs.aws.amazon.com/AWSJavaScriptSDK/v3/latest/client/bedrock-runtime/command/InvokeModelWithResponseStreamCommand/
-    const bedrockCommand = new InvokeModelWithResponseStreamCommand(invokeInput);
+    const bedrockCommand = new InvokeModelWithResponseStreamCommand(
+      invokeInput,
+    );
     const stream = await getClient().send(bedrockCommand);
     const iterator = makeIterator(stream);
     const iteratorStream = iteratorToStream(iterator);
@@ -86,7 +90,7 @@ export default async function POST(req) {
     console.error("Error:", error);
     return NextResponse.json(
       { message: "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

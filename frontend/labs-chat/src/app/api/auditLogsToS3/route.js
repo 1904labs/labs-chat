@@ -1,7 +1,7 @@
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
 import { getFormattedDateForLogs } from "@/helpers/dates";
 import { S3_Conn } from "@/helpers/aws";
-import { NextResponse } from "next/server"
+import { NextResponse } from "next/server";
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
@@ -21,8 +21,8 @@ const logCommunication = async (args) => {
   if (!REQUIRED_FIELDS.every((field) => args.hasOwnProperty(field))) {
     throw new Error(
       `Missing required fields: ${REQUIRED_FIELDS.filter(
-        (field) => !args.hasOwnProperty(field)
-      ).join(", ")}`
+        (field) => !args.hasOwnProperty(field),
+      ).join(", ")}`,
     );
   }
 
@@ -64,15 +64,12 @@ export default async function POST(req) {
     const requestBody = req.body;
 
     await logCommunication(requestBody);
-    return NextResponse.json(
-      { message: "Success" },
-      { status: 200 }
-    );
+    return NextResponse.json({ message: "Success" }, { status: 200 });
   } catch (error) {
     console.error("Error:", error);
     return NextResponse.json(
       { message: `Internal Server Error: ${error.message}` },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

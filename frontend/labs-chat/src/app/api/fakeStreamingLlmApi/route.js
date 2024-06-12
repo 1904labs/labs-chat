@@ -6,13 +6,14 @@ import { NextResponse } from "next/server";
 ////////////////////////////////////////////
 
 // random range between 100 and 500
-const randomSleepTime = async (min, max) => Math.floor(Math.random() * max) + min;
+const randomSleepTime = async (min, max) =>
+  Math.floor(Math.random() * max) + min;
 
 const FAKE_DELAY = 300;
 const encoder = new TextEncoder();
 
 // this is just to simulate the API response
-// we are not actually doing this anyway 
+// we are not actually doing this anyway
 // edge is required to return a streaming response
 export const runtime = "edge";
 
@@ -29,12 +30,11 @@ function iteratorToStream(iterator) {
   });
 }
 
-
 async function* makeIterator() {
   const fakeBotResponse = "This is the bot response message";
   const tokens = splitSentenceIntoTokens(fakeBotResponse);
   for (let i = 0; i < tokens.length; ++i) {
-    await randomSleepTime(FAKE_DELAY, FAKE_DELAY*2);
+    await randomSleepTime(FAKE_DELAY, FAKE_DELAY * 2);
     const obj = { token: tokens[i] };
     const jsonObj = JSON.stringify(obj);
     yield encoder.encode(jsonObj);
