@@ -1,6 +1,6 @@
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
-import { getFormattedDateForLogs } from "@/helpers/dates";
 import { S3_Conn } from "@/helpers/aws";
+import { getFormattedDateForLogs } from "@/helpers/dates";
 import { NextResponse } from "next/server";
 
 // Define the required fields for the communication data

@@ -1,5 +1,5 @@
-import ChatStreamingWindow from "./components/ChatStreamingWindow";
-import Layout from "./components/Layout";
+import ChatStreamingWindow from "../components/ChatStreamingWindow";
+import Layout from "../components/Layout";
 
 export default function StreamingTest() {
   return (
