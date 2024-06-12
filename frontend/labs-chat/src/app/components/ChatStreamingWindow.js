@@ -10,7 +10,7 @@ const MESSAGE_FORMAT = {
   id: 0,
   speaker: "bot",
   message: "Hello! How can I help you today?",
-  date: getFormattedDateForUI(),
+  date: getFormattedDateForUI(new Date()),
 };
 
 const ChatStreamingWindow = () => {
@@ -128,7 +128,7 @@ const ChatStreamingWindow = () => {
         id: sessionId,
         speaker: "bot",
         message: finalChatTransaction.model_response,
-        date: getFormattedDateForUI(),
+        date: getFormattedDateForUI(new Date()),
       };
 
       await logResponse(finalChatTransaction);
@@ -149,7 +149,7 @@ const ChatStreamingWindow = () => {
       id: sessionId,
       speaker: "user",
       message: input,
-      date: getFormattedDateForUI(),
+      date: getFormattedDateForUI(new Date()),
     };
     addMessageToHistory(newMessage, asyncBotResponse(input));
     setInput("");
