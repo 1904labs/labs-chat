@@ -1,0 +1,3 @@
+cd frontend/labs-chat
+npx lint-staged
+npm run prettier:fix
