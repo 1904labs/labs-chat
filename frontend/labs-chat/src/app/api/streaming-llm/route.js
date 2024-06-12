@@ -1,7 +1,7 @@
-"use server";
-import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { formatClaude3DataChunk, getClient } from "@/helpers/bedrock";
 import { Memory } from "@/helpers/memory";
+import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
+import { NextResponse } from "next/server";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -56,11 +56,7 @@ async function* makeIterator(stream) {
 // edge is required to return a streaming response
 export const runtime = "edge";
 
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    return new Response(null, { status: 404, statusText: "Not Found" });
-  }
-
+export default async function POST(req) {
   try {
     const request = await req.json();
     //append the human message to the context
@@ -85,12 +81,12 @@ export default async function handler(req, res) {
     const stream = await getClient().send(bedrockCommand);
     const iterator = makeIterator(stream);
     const iteratorStream = iteratorToStream(iterator);
-    return new Response(iteratorStream);
+    return new NextReponse(iteratorStream);
   } catch (error) {
     console.error("Error:", error);
-    return new Response(null, {
-      status: 500,
-      statusText: "Internal Server Error",
-    });
+    return NextResponse.json(
+      { message: "Internal Server Error" },
+      { status: 500 }
+    );
   }
 }

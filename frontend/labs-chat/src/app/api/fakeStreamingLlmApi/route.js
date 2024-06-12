@@ -55,7 +55,7 @@ const splitSentenceIntoTokens = (sentence) => {
   return tokens;
 };
 
-export default async function POST(req, res) {
+export default async function POST() {
   const iterator = makeIterator();
   const stream = iteratorToStream(iterator);
   return new NextResponse(stream);

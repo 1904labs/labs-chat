@@ -1,8 +1,7 @@
-import { NextResponse } from "next/server";
-import AWS from "aws-sdk";
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
 import { getFormattedDateForLogs } from "@/helpers/dates";
 import { S3_Conn } from "@/helpers/aws";
+import { NextResponse } from "next/server"
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
@@ -60,20 +59,20 @@ const logCommunication = async (args) => {
  * @param {Object} req - The HTTP request object.
  * @param {Object} res - The HTTP response object.
  */
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.status(405).json({ message: "Only POST is allowed" });
-  }
-
+export default async function POST(req) {
   try {
     const requestBody = req.body;
 
     await logCommunication(requestBody);
-    return res.status(200).json({ status: "Success" });
+    return NextResponse.json(
+      { message: "Success" },
+      { status: 200 }
+    );
   } catch (error) {
     console.error("Error:", error);
-    res
-      .status(500)
-      .json({ message: `Internal Server Error: ${error.message}` });
+    return NextResponse.json(
+      { message: `Internal Server Error: ${error.message}` },
+      { status: 500 }
+    );
   }
 }
