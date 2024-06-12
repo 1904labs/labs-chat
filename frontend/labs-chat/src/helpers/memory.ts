@@ -29,7 +29,7 @@ export class Memory {
         this.ai_role = "assistant";
     }
 
-     addHumanMessage(message): void {
+     addHumanMessage(message: string): void {
         // todo: add a limit to the context size, plus auto reduce context size
         if (this.verbose) {
             console.log(`Adding human message: ${message}`);
@@ -97,7 +97,7 @@ export class Memory {
         this.clearAIStream();
     };
 
-    accumulateAIStream(textDelta): void {
+    accumulateAIStream(textDelta: string): void {
         if (this.verbose) {
             console.log(`Accumulating AI stream: ${textDelta}`);
         }
