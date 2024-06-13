@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import ChatMessage from "./ChatMessage";
-import BotMessage from "./BotMessage";
-import sessionId from "@/helpers/sessionId";
 import { getFormattedDateForUI } from "@/helpers/dates";
+import sessionId from "@/helpers/sessionId";
+import { useEffect, useRef, useState } from "react";
+import { log } from "../../actions/log";
+import BotMessage from "./BotMessage";
+import ChatMessage from "./ChatMessage";
 
 const MESSAGE_FORMAT = {
   id: 0,
@@ -32,17 +33,6 @@ const ChatStreamingWindow = () => {
       setChatHistory((prevMessages) => [...prevMessages, message]);
     }
   };
-
-  async function logResponse(data) {
-    const response = await fetch("/api/auditLogsToS3", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    return response;
-  }
 
   /**
    * Generator function that streams the response body from a fetch request.
@@ -134,7 +124,7 @@ const ChatStreamingWindow = () => {
         date: getFormattedDateForUI(),
       };
 
-      await logResponse(finalChatTransaction);
+      await log(finalChatTransaction);
       addMessageToHistory(fullMessageStructure);
       setBotResponse("");
     } catch (e) {
