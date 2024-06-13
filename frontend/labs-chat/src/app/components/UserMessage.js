@@ -1,14 +1,12 @@
-"use client";
-
 const UserMessage = ({ speaker = "user", message = "", date = "" }) => {
   return (
-    <div className={`flex flex-col items-end justify-end items`}>
+    <div className={`items flex flex-col items-end justify-end`}>
       <div
-        className={`flex bg-white rounded-lg p-4 drop-shadow-md shadow-lg w-8/12 xl:w-1/3 2xl:w-5/12`}
+        className={`flex w-8/12 rounded-lg bg-white p-4 shadow-lg drop-shadow-md xl:w-1/3 2xl:w-5/12`}
       >
         <div className="w-1/12">
           <div
-            className={`w-12 h-12 bg-1904labs-blue-500 rounded-full flex items-center justify-center text-white font-light p-1`}
+            className={`flex h-12 w-12 items-center justify-center rounded-full bg-1904labs-blue-500 p-1 font-light text-white`}
           >
             CU
           </div>
@@ -18,7 +16,7 @@ const UserMessage = ({ speaker = "user", message = "", date = "" }) => {
           <p className="text-sm">{message}</p>
         </div>
       </div>
-      <p className="text-sm pt-2 text-1904labs-grey-300">{date}</p>
+      <p className="pt-2 text-sm text-1904labs-grey-300">{date}</p>
     </div>
   );
 };

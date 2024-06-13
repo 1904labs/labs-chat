@@ -1,5 +1,6 @@
+"use client";
 import React, { useState } from "react";
-import Button from "./Button";
+import Button from "@components/Button";
 
 const PromptBox = ({
   handleSubmit,
@@ -10,7 +11,7 @@ const PromptBox = ({
   appColor = "robotBlue",
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const handleKeyDown = e => {
+  const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSubmit(inputValue);
       setInputValue("");
@@ -32,12 +33,17 @@ const PromptBox = ({
         <input
           type="text"
           value={inputValue}
-          onChange={e => setInputValue(e?.target?.value)}
+          onChange={(e) => setInputValue(e?.target?.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeHolderText || "Enter your prompt"}
-          className="w-full mb-4 py-4 px-6 bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 rounded shadow"
+          className="mb-4 w-full rounded bg-white px-6 py-4 text-gray-900 placeholder-gray-500 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
-        <Button text={"Enter"} disable={disable} onClick={onSubmit} appColor={appColor}/>
+        <Button
+          text={"Enter"}
+          disable={disable}
+          onClick={onSubmit}
+          appColor={appColor}
+        />
       </div>
       <p className={`text-red-500 ${error ? "block" : "hidden"}`}>
         {error?.message}

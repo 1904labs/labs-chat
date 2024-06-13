@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
-import AWS from "aws-sdk";
+"use server";
+
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
-import { getFormattedDateForLogs } from "@/helpers/dates";
 import { S3_Conn } from "@/helpers/aws";
+import { getFormattedDateForLogs } from "@/helpers/dates";
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
@@ -22,8 +22,8 @@ const logCommunication = async (args) => {
   if (!REQUIRED_FIELDS.every((field) => args.hasOwnProperty(field))) {
     throw new Error(
       `Missing required fields: ${REQUIRED_FIELDS.filter(
-        (field) => !args.hasOwnProperty(field)
-      ).join(", ")}`
+        (field) => !args.hasOwnProperty(field),
+      ).join(", ")}`,
     );
   }
 
@@ -55,25 +55,12 @@ const logCommunication = async (args) => {
   await S3_Conn.putObject(params).promise();
 };
 
-/**
- * Handles the HTTP POST request to log communication data.
- * @param {Object} req - The HTTP request object.
- * @param {Object} res - The HTTP response object.
- */
-export default async function handler(req, res) {
-  if (req.method !== "POST") {
-    res.status(405).json({ message: "Only POST is allowed" });
-  }
-
+export async function log(data) {
   try {
-    const requestBody = req.body;
-
-    await logCommunication(requestBody);
-    return res.status(200).json({ status: "Success" });
+    await logCommunication(data);
+    return { message: "Success" };
   } catch (error) {
     console.error("Error:", error);
-    res
-      .status(500)
-      .json({ message: `Internal Server Error: ${error.message}` });
+    throw new Error(`Internal Server Error: ${error.message}`);
   }
 }
