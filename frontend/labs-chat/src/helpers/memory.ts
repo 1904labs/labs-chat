@@ -13,10 +13,11 @@ export class Memory {
   private human_role: string;
   private ai_role: string;
 
-  constructor(verbose = false) {
+  constructor(verbose = false, system_prompt = "", s3_ptr = "") {
     // todo in the future this should contain sessions for multiple users
     // add this.sessions as a hashtable?
     // also the session shouldn't be created here. will let LC-44 change this?
+    // todo: remove the system prompt and s3_ptr from the Memory constructor - this will happen on session creation
     this.session = {
       session_id: "1234",
       user_id: "test_user",
@@ -24,8 +25,8 @@ export class Memory {
       conversation_s3_link: "",
       conversation_history: [],
       conversation_context: { token_size: 0, context: [] },
-      system_prompt: process.env.SYSTEM_PROMPT as string,
-      system_prompt_s3_ptr: "", // todo when config is pointing to this location
+      system_prompt: system_prompt,
+      system_prompt_s3_ptr: s3_ptr, 
       session_name: "New Session",
       is_hidden: false,
       ai_stream: "",

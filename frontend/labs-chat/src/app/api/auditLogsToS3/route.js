@@ -52,8 +52,14 @@ const logCommunication = async (args) => {
     ContentType: "application/json",
   };
 
-  await S3_Conn.putObject(params).promise();
-};
+  await S3_Conn.putObject(params).promise().then((data) => {
+    return data.prompt;
+  }).catch((err) => {
+    // set system prompt to null if there is an error
+    console.error(err);
+    return null;
+  });
+}
 
 /**
  * Handles the HTTP POST request to log communication data.
