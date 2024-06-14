@@ -1,10 +1,8 @@
-"use client";
-
-import UserMessage from "./UserMessage";
-import BotMessage from "./BotMessage";
+import UserMessage from "@components/UserMessage";
+import BotMessage from "@components/BotMessage";
 
 const Chatmessage = ({ messageData }) => {
-  if (messageData.speaker == "user") {
+  if (messageData.speaker === "user") {
     return (
       <UserMessage
         speaker={messageData.speaker}
