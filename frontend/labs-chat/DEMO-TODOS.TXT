@@ -1,0 +1,7 @@
+This is to remind anyone demoing the app about tasks to do before the demo.
+
+x recent AWS cred in env.local
+x branch set to intended branch
+x do not disturb on for the appropriate time
+x sleep set to never
+x close other windows
