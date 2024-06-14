@@ -1,16 +1,16 @@
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
-## Getting Started 
+## Getting Started
 
 ### Locally
 
 #### Prerequisites
 
 1. AWS credentials set in `.env.local`
-    - go to `go.aws.1904.io`
-    - select the appropriate project (needs access to Bedrock Models configured, S3, DynamoDB)
-    - Set env variables, similar to env.sample
 
+   - go to `go.aws.1904.io`
+   - select the appropriate project (needs access to Bedrock Models configured, S3, DynamoDB)
+   - Set env variables, similar to env.sample
 
 1. Run the development server:
 
@@ -39,20 +39,23 @@ It also relies on document format within AWS
 ### System Prompts
 
 Storing System Prompts within S3:
-Path: 
+Path:
+
 ```
 S3 / labs_chat_data_bucket / system_prompts / chat / filename_versionNumber
 ```
 
-(Filename) -  Human readable identifier. Maybe a summary or department name,
+(Filename) - Human readable identifier. Maybe a summary or department name,
 
 Format:
+
 ```
 [filename]_[5-digit version number, i.e. 00001]
 ```
 
 Contents of the json file within S3:
 JSON with a text field `prompt`
+
 ```
 {
     "prompt": "You are a friendly, AI assistant, who answers my questions in a businesslike manner."

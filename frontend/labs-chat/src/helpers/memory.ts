@@ -26,7 +26,7 @@ export class Memory {
       conversation_history: [],
       conversation_context: { token_size: 0, context: [] },
       system_prompt: system_prompt,
-      system_prompt_s3_ptr: s3_ptr, 
+      system_prompt_s3_ptr: s3_ptr,
       session_name: "New Session",
       is_hidden: false,
       ai_stream: "",
