@@ -1,8 +1,9 @@
 "use server";
 
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
-import { S3_Conn } from "@/helpers/aws";
-import { getFormattedDateForLogs } from "@/helpers/dates";
+import { S3_client } from "@helpers/aws";
+import { getFormattedDateForLogs } from "@helpers/dates";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
@@ -52,7 +53,8 @@ const logCommunication = async (args) => {
     ContentType: "application/json",
   };
 
-  await S3_Conn.putObject(params).promise();
+  const command = new PutObjectCommand(params);
+  await S3_client.send(command);
 };
 
 export async function log(data) {
