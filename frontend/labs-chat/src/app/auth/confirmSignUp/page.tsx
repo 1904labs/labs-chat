@@ -1,5 +1,5 @@
-import ConfirmSignUpForm from "@/app/components/auth/ConfirmSignupForm";
+import ConfirmSignUpForm from "@/app/components/auth/ConfirmSignUpForm";
 
-export default function LoginPage() {
+export default function ConfirmSignUpPage() {
   return <ConfirmSignUpForm />;
 }

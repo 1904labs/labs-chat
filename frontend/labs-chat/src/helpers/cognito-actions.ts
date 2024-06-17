@@ -9,14 +9,14 @@ import {
   updateUserAttribute,
   type UpdateUserAttributeOutput,
   confirmUserAttribute,
-  updatePassword,
+  resetPassword,
+  confirmSignIn,
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/helpers/get-error-mesage";
 
-
 export async function handleSignUp(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const { isSignUpComplete, userId, nextStep } = await signUp({
@@ -39,7 +39,7 @@ export async function handleSignUp(
 
 export async function handleSendEmailVerificationCode(
   prevState: { message: string; errorMessage: string },
-  formData: FormData
+  formData: FormData,
 ) {
   let currentState;
   try {
@@ -62,7 +62,7 @@ export async function handleSendEmailVerificationCode(
 
 export async function handleConfirmSignUp(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     const { isSignUpComplete, nextStep } = await confirmSignUp({
@@ -78,29 +78,27 @@ export async function handleConfirmSignUp(
 
 export async function handleSignIn(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
-  console.log("WHATDAFUC")
   let redirectLink = "/";
   try {
+    const userEmail = String(formData.get("email"));
     const { nextStep } = await signIn({
-      username: String(formData.get("email")),
+      username: userEmail,
       password: String(formData.get("password")),
     });
-    if(nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
-      redirectLink = "/auth/reset-password";
+    if (nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
+      redirectLink = "/auth/confirmSignIn";
     }
     if (nextStep.signInStep === "CONFIRM_SIGN_UP") {
       await resendSignUpCode({
-        username: String(formData.get("email")),
+        username: userEmail,
       });
-      redirectLink = "/auth/confirm-signup";
+      redirectLink = "/auth/confirmSignUp";
     }
   } catch (error) {
-    console.log(`error: ${JSON.stringify(error)}`)
     return getErrorMessage(error);
   }
-  console.log('redirecting! to ' + redirectLink)
   redirect(redirectLink);
 }
 
@@ -115,7 +113,7 @@ export async function handleSignOut() {
 
 export async function handleUpdateUserAttribute(
   prevState: string,
-  formData: FormData
+  formData: FormData,
 ) {
   let attributeKey = "name";
   let attributeValue;
@@ -160,33 +158,33 @@ function handleUpdateUserAttributeNextSteps(output: UpdateUserAttributeOutput) {
   }
 }
 
-export async function handleUpdatePassword(
+export async function handleSignInWithNewPassword(
   prevState: "success" | "error" | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
-  const currentPassword = formData.get("current_password");
-  const newPassword = formData.get("new_password");
+  const newPassword = String(formData.get("new_password"));
+  const newPasswordConfirm = String(formData.get("new_password_confirm"));
 
-  if (currentPassword === newPassword) {
-    return;
+  if (newPasswordConfirm !== newPassword) {
+    return "Passwords do not match.";
   }
 
   try {
-    await updatePassword({
-      oldPassword: String(currentPassword),
-      newPassword: String(newPassword),
+    const { isSignedIn, nextStep } = await confirmSignIn({
+      challengeResponse: newPassword,
+      options: {},
     });
   } catch (error) {
     console.log(error);
-    return "error";
+    return getErrorMessage(error);
   }
 
-  return "success";
+  redirect("/");
 }
 
 export async function handleConfirmUserAttribute(
   prevState: "success" | "error" | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   const code = formData.get("code");
 
@@ -209,21 +207,35 @@ export async function handleConfirmUserAttribute(
 
 export async function handleResetPassword(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     if (!formData.get("email")) {
       throw new Error("Error sending code");
     }
+    const username = String(formData.get("email"));
+    const { nextStep } = await resetPassword({ username });
+    switch (nextStep.resetPasswordStep) {
+      case "CONFIRM_RESET_PASSWORD_WITH_CODE":
+        const codeDeliveryDetails = nextStep.codeDeliveryDetails;
+        console.log(
+          `Confirmation code was sent to ${codeDeliveryDetails.deliveryMedium}`,
+        );
+        // Collect the confirmation code from the user and pass to confirmResetPassword.
+        break;
+      case "DONE":
+        console.log("Successfully reset password.");
+        break;
+    }
   } catch (error) {
     return getErrorMessage(error);
   }
-  redirect("/auth/reset-password/confirm");
+  redirect("/auth/resetPassword/confirm");
 }
 
 export async function handleConfirmResetPassword(
   prevState: string | undefined,
-  formData: FormData
+  formData: FormData,
 ) {
   try {
     if (!formData.get("email")) {

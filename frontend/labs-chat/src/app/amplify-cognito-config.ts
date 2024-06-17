@@ -13,7 +13,7 @@ Amplify.configure(
   {
     Auth: authConfig,
   },
-  { ssr: true }
+  { ssr: true },
 );
 
 export default function ConfigureAmplifyClientSide() {
