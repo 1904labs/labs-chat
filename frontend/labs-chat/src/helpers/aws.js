@@ -1,3 +1,4 @@
+import { DynamoDBSession } from "@/app/types";
 import AWS from "aws-sdk";
 
 /**
@@ -13,3 +14,10 @@ AWS.config.update({
 
 // export the s3 option
 export const S3_Conn = new AWS.S3();
+
+// export the dynamodb option
+export const DynamoDB_Conn = new AWS.DynamoDB();
+
+export function convertToDynamoDBItem(dynamoDBSession) {
+  return AWS.DynamoDB.Converter.marshall(dynamoDBSession);
+}

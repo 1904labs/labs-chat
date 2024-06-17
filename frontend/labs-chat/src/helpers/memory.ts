@@ -5,6 +5,7 @@ import {
   ConversationContentText,
   ConversationContentImage,
   ConversationSegment,
+  DynamoDBSession,
 } from "./../app/types";
 
 export class Memory {
@@ -140,5 +141,17 @@ export class Memory {
   }
   getSystemPrompt(): string {
     return this.session.system_prompt;
+  }
+
+  getDynamoDBSession(): DynamoDBSession {
+    return {
+      session_id: this.session.session_id,
+      user_id: this.session.user_id,
+      timestamp: this.session.timestamp,
+      conversation_s3_link: this.session.conversation_s3_link,
+      system_prompt_s3_ptr: this.session.system_prompt_s3_ptr,
+      session_name: this.session.session_name,
+      is_hidden: this.session.is_hidden
+    };
   }
 }
