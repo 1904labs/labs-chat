@@ -68,6 +68,21 @@ async function* makeIterator(stream) {
   }
 }
 
+async function logConversation() {
+  const history = memory.getHistory();
+  const context = memory.getContext();
+  const sessionId = memory.getSessionId();
+  const logFileName = `conversations/${sessionId}.json`;
+  const params = {
+    Bucket: "labs-chat-data-bucket",
+    Key: logFileName,
+    Body: JSON.stringify({conversationHistory: history, conversationContext: context}),
+    ContentType: "application/json",
+  };
+
+  await S3_Conn.putObject(params).promise();
+}
+
 export async function POST(req, res) {
   try {
     const request = await req.json();
