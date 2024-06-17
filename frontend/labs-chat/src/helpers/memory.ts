@@ -147,4 +147,7 @@ export class Memory {
   getSessionId(): string {
     return this.session.session_id;
   }
+  setConversationS3Ptr(s3Location) {
+    this.session.conversation_s3_link = s3Location;
+  }
 }
