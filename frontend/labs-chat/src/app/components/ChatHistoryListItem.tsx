@@ -2,15 +2,19 @@
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { FunctionComponent } from "react";
 
-
 interface Props {
-  title: string,
-  date: string,
-  onEditPressed: () => void,
-  onDeletePressed: () => void
+  title: string;
+  date: string;
+  onEditPressed: () => void;
+  onDeletePressed: () => void;
 }
 
-const ChatHistoryListItem: FunctionComponent<Props> = ({title, date, onEditPressed = () => {}, onDeletePressed = () => {}}) => {
+const ChatHistoryListItem: FunctionComponent<Props> = ({
+  title,
+  date,
+  onEditPressed = () => {},
+  onDeletePressed = () => {},
+}) => {
   return (
     <li className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
