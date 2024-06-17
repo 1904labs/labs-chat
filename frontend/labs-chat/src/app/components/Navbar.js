@@ -14,7 +14,7 @@ const Navbar = () => {
       </div>
       <div className="flex items-center">
         <CogIcon className="mr-4 h-6 w-6" />
-        <NavbarDropdown/>
+        <NavbarDropdown />
       </div>
     </nav>
   );

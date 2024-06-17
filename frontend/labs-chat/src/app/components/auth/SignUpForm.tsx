@@ -14,7 +14,7 @@ import Link from "next/link";
 export default function SignUpForm() {
   const [errorMessage, dispatch] = useFormState(handleSignUp, undefined);
   return (
-    <form action={dispatch} className="space-y-3 max-w-xl">
+    <form action={dispatch} className="max-w-xl space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`mb-3 text-2xl`}>Please create an account.</h1>
         <div className="w-full">
@@ -111,7 +111,7 @@ function SignUpButton() {
 
   return (
     <button
-      className="mt-4 w-full justify-around max-w-80 flex rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
+      className="mt-4 flex w-full max-w-80 justify-around rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
       disabled={pending}
     >
       Create account <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />

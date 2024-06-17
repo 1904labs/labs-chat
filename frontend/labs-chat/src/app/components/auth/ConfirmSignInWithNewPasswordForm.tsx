@@ -89,7 +89,8 @@ function ConfirmNewPasswordButton() {
       className="mt-4 w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
       disabled={pending}
     >
-      Set New Password <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
+      Set New Password{" "}
+      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
     </button>
   );
 }

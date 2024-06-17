@@ -11,7 +11,7 @@ import { handleResetPassword } from "@helpers/cognito-actions";
 export default function SubmitResetPasswordFrom() {
   const [errorMessage, dispatch] = useFormState(handleResetPassword, undefined);
   return (
-    <form action={dispatch} className="space-y-3 max-w-lg">
+    <form action={dispatch} className="max-w-lg space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`mb-3 text-2xl`}>
           Please enter your email to get confirmation code.
@@ -64,10 +64,11 @@ function SendConfirmationCodeButton() {
 
   return (
     <button
-      className="mt-4 w-full max-w-80 flex rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
+      className="mt-4 flex w-full max-w-80 rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
       disabled={pending}
     >
-      <div className="flex-1">Send Code</div> <ArrowRightIcon className="ml-auto h-6 w-6 text-gray-50" />
+      <div className="flex-1">Send Code</div>{" "}
+      <ArrowRightIcon className="ml-auto h-6 w-6 text-gray-50" />
     </button>
   );
 }

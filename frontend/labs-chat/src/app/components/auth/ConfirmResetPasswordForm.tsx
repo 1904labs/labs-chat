@@ -14,7 +14,7 @@ export default function ConfirmResetPasswordForm() {
     undefined,
   );
   return (
-    <form action={dispatch} className="space-y-3 w-full max-w-80">
+    <form action={dispatch} className="w-full max-w-80 space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`mb-3 text-2xl`}>Reset password.</h1>
         <div className="w-full">
