@@ -141,4 +141,10 @@ export class Memory {
   getSystemPrompt(): string {
     return this.session.system_prompt;
   }
+  getHistory(): ConversationElement[] {
+    return this.session.conversation_history;
+  }
+  getSessionId(): string {
+    return this.session.session_id;
+  }
 }
