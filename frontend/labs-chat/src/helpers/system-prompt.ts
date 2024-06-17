@@ -29,8 +29,8 @@ export async function getSystemPrompt(fileName: string): Promise<string> {
       resolve(prompt);
     } catch (err) {
       console.error(err);
-      // If there is an error, return an empty string. The conversation will continue without a system prompt.
-      return "";
+      // If there is an error, return the app's default prompt.
+      return process.env.DEFAULT_SYSTEM_PROMPT;
     }
   });
 }

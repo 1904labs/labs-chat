@@ -66,6 +66,7 @@ JSON with a text field `prompt`
 
 1. Upload json file
 1. Update the config value key:
+
 ```
 SYSTEM_PROMPT_FILE="[file name]"
 ```
