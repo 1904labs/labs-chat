@@ -217,8 +217,8 @@ export async function handleResetPassword(
       throw new Error("No email provided");
     }
     const username = String(formData.get("email"));
-    await resetPassword({username });
-    console.log(`Reset password email sent to ${username}`)
+    await resetPassword({ username });
+    console.log(`Reset password email sent to ${username}`);
   } catch (error) {
     return getErrorMessage(error);
   }

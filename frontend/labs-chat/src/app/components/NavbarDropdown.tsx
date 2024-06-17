@@ -20,11 +20,7 @@ const NavbarDropdown = () => {
 
   return (
     <div className="relative">
-      <button
-        id="dropdownDefaultButton"
-        type="button"
-        onClick={handleDropdown}
-      >
+      <button id="dropdownDefaultButton" type="button" onClick={handleDropdown}>
         <EllipsisVerticalIcon className="h-6 w-6" />
       </button>
 

@@ -21,7 +21,6 @@
     "@smithy/eventstream-codec": "^2.2.0",
     "aws-amplify": "^6.3.6",
     "aws-sdk": "^2.1622.0",
-    "next": "14.2.3",
     "react": "^18",
     "react-dom": "^18"
   },
@@ -33,6 +32,7 @@
     "eslint-config-prettier": "^9.1.0",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.7",
+    "next": "^14.2.4",
     "postcss": "^8",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.4",
