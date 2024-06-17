@@ -1,22 +1,25 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import ChatMessage from "./ChatMessage";
-import BotMessage from "./BotMessage";
-import sessionId from "@/helpers/sessionId";
-import { getFormattedDateForUI } from "@/helpers/dates";
+import ChatMessage from "@components/ChatMessage";
+import BotMessage from "@components/BotMessage";
+import sessionId from "@helpers/sessionId";
+import { getFormattedDateForUI } from "@helpers/dates";
+import { log } from "@actions/log";
 
-const MESSAGE_FORMAT = {
-  id: 0,
-  speaker: "bot",
-  message: "Hello! How can I help you today?",
-  date: getFormattedDateForUI(new Date()),
-};
+function makeDefaultMessage() {
+  return {
+    id: 0,
+    speaker: "bot",
+    message: "Hello! How can I help you today?",
+    date: getFormattedDateForUI(new Date()),
+  };
+}
 
 const ChatStreamingWindow = () => {
   const scrollRef = useRef(null);
   const [input, setInput] = useState("");
-  const [chatHistory, setChatHistory] = useState([MESSAGE_FORMAT]);
+  const [chatHistory, setChatHistory] = useState([makeDefaultMessage()]);
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [botResponse, setBotResponse] = useState("");
 
@@ -32,17 +35,6 @@ const ChatStreamingWindow = () => {
       setChatHistory((prevMessages) => [...prevMessages, message]);
     }
   };
-
-  async function logResponse(data) {
-    const response = await fetch("/api/auditLogsToS3", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    return response;
-  }
 
   /**
    * Generator function that streams the response body from a fetch request.
@@ -84,7 +76,10 @@ const ChatStreamingWindow = () => {
           const chatTransaction = JSON.parse(value);
 
           chatTransactions.push(chatTransaction);
-          setBotResponse((prevResp) => [...prevResp, chatTransaction.model_response]);
+          setBotResponse((prevResp) => [
+            ...prevResp,
+            chatTransaction.model_response,
+          ]);
         } catch (e) {
           console.log(`error parsing chunk: ${e.message}`);
           console.log(JSON.stringify(e));
@@ -92,23 +87,23 @@ const ChatStreamingWindow = () => {
       }
 
       const finalChatTransaction = {
-        ...chatTransactions[0],// Initialize using the first entry
+        ...chatTransactions[0], // Initialize using the first entry
         input_tokens: 0,
-        output_tokens:0,
+        output_tokens: 0,
         user_input: userMessage, // populate values from settings and input
         temperature: process.env.MODEL_TEMPERATURE,
         model_response: "",
         conversation_id: sessionId,
-      }
+      };
 
-      for (let chatTransaction of chatTransactions){
-        
+      for (let chatTransaction of chatTransactions) {
         // add input and output tokens
         finalChatTransaction.input_tokens += chatTransaction.input_tokens ?? 0;
-        finalChatTransaction.output_tokens += chatTransaction.output_tokens ?? 0;
+        finalChatTransaction.output_tokens +=
+          chatTransaction.output_tokens ?? 0;
 
         // concat text from the model_response
-        if (chatTransaction.model_response){
+        if (chatTransaction.model_response) {
           finalChatTransaction.model_response += chatTransaction.model_response;
         }
 
@@ -120,7 +115,7 @@ const ChatStreamingWindow = () => {
           finalChatTransaction.error_text = chatTransaction.error_text;
         }
       }
-      
+
       // this section simulates once the streaming
       // response is done and we want to add the final response to the
       // chat history
@@ -131,7 +126,7 @@ const ChatStreamingWindow = () => {
         date: getFormattedDateForUI(new Date()),
       };
 
-      await logResponse(finalChatTransaction);
+      await log(finalChatTransaction);
       addMessageToHistory(fullMessageStructure);
       setBotResponse("");
     } catch (e) {
@@ -145,20 +140,19 @@ const ChatStreamingWindow = () => {
   const onMessageSubmitted = (e) => {
     e.preventDefault();
     const newMessage = {
-      ...MESSAGE_FORMAT,
+      ...makeDefaultMessage(),
       id: sessionId,
       speaker: "user",
       message: input,
-      date: getFormattedDateForUI(new Date()),
     };
     addMessageToHistory(newMessage, asyncBotResponse(input));
     setInput("");
   };
 
   return (
-    <div className="w-full lg:w-full h-full  2xl:w-2/3 overflow-y-auto bg-white bg-opacity-90">
-      <div className="flex flex-grow h-full flex-col justify-between">
-        <div className="flex flex-col flex-grow gap-6 p-4 overflow-y-scroll">
+    <div className="h-full w-full overflow-y-auto bg-white bg-opacity-90 lg:w-full 2xl:w-2/3">
+      <div className="flex h-full flex-grow flex-col justify-between">
+        <div className="flex flex-grow flex-col gap-6 overflow-y-scroll p-4">
           {/* Loop over messages */}
           {chatHistory.map((messageData, index) => (
             <ChatMessage
@@ -169,8 +163,8 @@ const ChatStreamingWindow = () => {
           {loadingResponse && <BotMessage message={botResponse} date={""} />}
           <div ref={scrollRef}></div>
         </div>
-        <div className="p-4 w-10/12 2xl:w-8/12 m-auto">
-          <form autoFocus className="flex justify-between items-center">
+        <div className="m-auto w-10/12 p-4 2xl:w-8/12">
+          <form autoFocus className="flex items-center justify-between">
             {/* chat input button that is at bottom of screen*/}
             <input
               type="text"
@@ -179,14 +173,14 @@ const ChatStreamingWindow = () => {
               placeholder={
                 loadingResponse ? "Loading..." : "Message 1904labsChat..."
               }
-              className="w-full p-2 border h-10 border-1904labs-blue-300 rounded-tl-lg rounded-bl-lg"
+              className="h-10 w-full rounded-bl-lg rounded-tl-lg border border-1904labs-blue-300 p-2"
             />
             <button
               disabled={loadingResponse || input === ""}
               onClick={onMessageSubmitted}
               className={`bg-1904labs-green-500${
-                loadingResponse || input == "" ? " bg-gray-200 " : " "
-              }h-10 rounded-tr-lg rounded-br-lg py-2 px-10 text-white`}
+                loadingResponse || input === "" ? "bg-gray-200" : " "
+              }h-10 rounded-br-lg rounded-tr-lg px-10 py-2 text-white`}
             >
               enter
             </button>
