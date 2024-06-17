@@ -10,6 +10,7 @@ import {
   type UpdateUserAttributeOutput,
   confirmUserAttribute,
   resetPassword,
+  confirmResetPassword,
   confirmSignIn,
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/helpers/get-error-mesage";
@@ -83,10 +84,12 @@ export async function handleSignIn(
   let redirectLink = "/";
   try {
     const userEmail = String(formData.get("email"));
-    const { nextStep } = await signIn({
+    const data = await signIn({
       username: userEmail,
       password: String(formData.get("password")),
     });
+    const { nextStep } = data;
+    console.log(`nextStep: ${JSON.stringify(data, null, 2)}`);
     if (nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
       redirectLink = "/auth/confirmSignIn";
     }
@@ -211,22 +214,11 @@ export async function handleResetPassword(
 ) {
   try {
     if (!formData.get("email")) {
-      throw new Error("Error sending code");
+      throw new Error("No email provided");
     }
     const username = String(formData.get("email"));
-    const { nextStep } = await resetPassword({ username });
-    switch (nextStep.resetPasswordStep) {
-      case "CONFIRM_RESET_PASSWORD_WITH_CODE":
-        const codeDeliveryDetails = nextStep.codeDeliveryDetails;
-        console.log(
-          `Confirmation code was sent to ${codeDeliveryDetails.deliveryMedium}`,
-        );
-        // Collect the confirmation code from the user and pass to confirmResetPassword.
-        break;
-      case "DONE":
-        console.log("Successfully reset password.");
-        break;
-    }
+    await resetPassword({username });
+    console.log(`Reset password email sent to ${username}`)
   } catch (error) {
     return getErrorMessage(error);
   }
@@ -238,9 +230,11 @@ export async function handleConfirmResetPassword(
   formData: FormData,
 ) {
   try {
-    if (!formData.get("email")) {
-      throw new Error("Error sending code");
-    }
+    await confirmResetPassword({
+      username: String(formData.get("email")),
+      confirmationCode: String(formData.get("code")),
+      newPassword: String(formData.get("password")),
+    });
   } catch (error) {
     return getErrorMessage(error);
   }

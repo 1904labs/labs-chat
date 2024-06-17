@@ -1,5 +1,4 @@
 "use client";
-import { handleSignOut } from "@/helpers/cognito-actions";
 import { EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import { signOut } from "aws-amplify/auth";
 import { useRouter } from "next/navigation";
@@ -23,7 +22,6 @@ const NavbarDropdown = () => {
     <div className="relative">
       <button
         id="dropdownDefaultButton"
-        data-dropdown-toggle="dropdown"
         type="button"
         onClick={handleDropdown}
       >
@@ -33,7 +31,7 @@ const NavbarDropdown = () => {
       {isOpen && (
         <div
           id="dropdown"
-          className="absolute right-0 z-10 w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
+          className="absolute right-0 w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:bg-gray-700"
         >
           <ul
             className="flex w-full py-2 text-sm text-gray-700 dark:text-gray-200"
