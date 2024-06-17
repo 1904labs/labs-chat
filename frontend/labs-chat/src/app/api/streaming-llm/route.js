@@ -72,14 +72,19 @@ async function logConversation() {
   const history = memory.getHistory();
   const context = memory.getContext();
   const sessionId = memory.getSessionId();
+  const bucketName = "labs-chat-data-bucket";
   const logFileName = `conversations/${sessionId}.json`;
+  const s3Location = `s3://${bucketName}/${logFileName}`;
+  memory.setConversationS3Ptr(s3Location);
   const params = {
-    Bucket: "labs-chat-data-bucket",
+    Bucket: bucketName,
     Key: logFileName,
-    Body: JSON.stringify({conversationHistory: history, conversationContext: context}),
+    Body: JSON.stringify({
+      conversationHistory: history,
+      conversationContext: context,
+    }),
     ContentType: "application/json",
   };
-
   await S3_Conn.putObject(params).promise();
 }
 
