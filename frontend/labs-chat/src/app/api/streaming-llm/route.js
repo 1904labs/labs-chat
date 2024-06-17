@@ -1,8 +1,8 @@
 "use server";
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
-import { formatClaude3DataChunk, getClient } from "@/helpers/bedrock";
-import { Memory } from "@/helpers/memory";
-import { getSystemPrompt } from "@/helpers/system-prompt";
+import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
+import { Memory } from "@helpers/memory";
+import { getSystemPrompt } from "@helpers/system-prompt";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 

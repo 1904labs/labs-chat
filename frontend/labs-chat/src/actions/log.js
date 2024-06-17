@@ -1,8 +1,8 @@
 "use server";
 
 import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
-import { S3_client } from "@/helpers/aws";
-import { getFormattedDateForLogs } from "@/helpers/dates";
+import { S3_client } from "@helpers/aws";
+import { getFormattedDateForLogs } from "@helpers/dates";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 // Define the required fields for the communication data

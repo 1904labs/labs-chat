@@ -1,5 +1,5 @@
 import { GetObjectCommand } from "@aws-sdk/client-s3";
-import { S3_client as client } from "@/helpers/aws";
+import { S3_client as client } from "@helpers/aws";
 
 // Construct file path using bucket path and the system prompt file name from the env file
 const filePath =
