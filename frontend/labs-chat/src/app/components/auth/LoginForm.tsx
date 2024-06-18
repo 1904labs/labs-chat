@@ -9,6 +9,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
 import Link from "next/link";
+import FormConfirmButton from "@components/FormConfirmButton";
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
@@ -57,7 +58,8 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        <LoginButton />
+        
+        <FormConfirmButton label="Log in"/>
         <div className="flex justify-center">
           <Link
             href="/auth/resetPassword/submit"
@@ -72,6 +74,14 @@ export default function LoginForm() {
             className="mt-2 cursor-pointer text-blue-500"
           >
             {"Don't have an account? "} Sign up.
+          </Link>
+        </div>
+        <div className="flex justify-center">
+          <Link
+            href="/auth/confirmSignUp"
+            className="mt-2 cursor-pointer text-blue-500"
+          >
+            Need to confirm a code? Click here.
           </Link>
         </div>
         <div className="flex h-8 items-end space-x-1">
@@ -90,18 +100,5 @@ export default function LoginForm() {
         </div>
       </div>
     </form>
-  );
-}
-
-function LoginButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      className="mt-4 flex w-full max-w-80 justify-around rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
-      disabled={pending}
-    >
-      Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-    </button>
   );
 }

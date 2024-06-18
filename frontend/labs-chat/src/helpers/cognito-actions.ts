@@ -15,13 +15,20 @@ import {
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/helpers/get-error-mesage";
 
+const ALLOWED_DOMAINS = ["1904labs.com"];
+
 export async function handleSignUp(
   prevState: string | undefined,
   formData: FormData,
 ) {
+  let email;
   try {
+    email = String(formData.get("email"));
+    if(!ALLOWED_DOMAINS.some(domain => email.includes(domain))){
+      throw new Error("Invalid email domain");
+    }
     const { isSignUpComplete, userId, nextStep } = await signUp({
-      username: String(formData.get("email")),
+      username: email,
       password: String(formData.get("password")),
       options: {
         userAttributes: {
@@ -35,7 +42,12 @@ export async function handleSignUp(
   } catch (error) {
     return getErrorMessage(error);
   }
-  redirect("/auth/confirm-signup");
+
+  if(email){
+    redirect(`/auth/confirmSignUp?email=${encodeURIComponent(email)}`);
+  }else{
+    redirect(`/auth/confirmSignUp`);
+  }
 }
 
 export async function handleSendEmailVerificationCode(
@@ -43,14 +55,20 @@ export async function handleSendEmailVerificationCode(
   formData: FormData,
 ) {
   let currentState;
+  let email;
   try {
+    email = String(formData.get("email"));
+    if(!ALLOWED_DOMAINS.some(domain => email.includes(domain))){
+      throw new Error("Invalid email domain");
+    }
     await resendSignUpCode({
-      username: String(formData.get("email")),
+      username: email,
     });
     currentState = {
       ...prevState,
       message: "Code sent successfully",
     };
+    
   } catch (error) {
     currentState = {
       ...prevState,
@@ -58,7 +76,11 @@ export async function handleSendEmailVerificationCode(
     };
   }
 
-  return currentState;
+  if(email){
+    redirect(`/auth/confirmSignUp?email=${encodeURIComponent(email)}`);
+  }else {
+    return currentState;
+  }
 }
 
 export async function handleConfirmSignUp(
@@ -66,15 +88,23 @@ export async function handleConfirmSignUp(
   formData: FormData,
 ) {
   try {
+    const email = String(formData.get("email"));
+    if(!ALLOWED_DOMAINS.some(domain => email.includes(domain))){
+      throw new Error("Invalid email domain");
+    }
     const { isSignUpComplete, nextStep } = await confirmSignUp({
-      username: String(formData.get("email")),
+      username: email,
       confirmationCode: String(formData.get("code")),
     });
-    await autoSignIn();
+    return handleSignIn(prevState, formData);
   } catch (error) {
-    return getErrorMessage(error);
+    if(error.message.includes('status is CONFIRMED'))
+    {
+      return handleSignIn(prevState, formData);
+    }else{
+      return getErrorMessage(error);
+    }
   }
-  redirect("/auth/login");
 }
 
 export async function handleSignIn(
@@ -84,6 +114,9 @@ export async function handleSignIn(
   let redirectLink = "/";
   try {
     const userEmail = String(formData.get("email"));
+    if(!ALLOWED_DOMAINS.some(domain => userEmail.includes(domain))){
+      throw new Error("Invalid email domain");
+    }
     const data = await signIn({
       username: userEmail,
       password: String(formData.get("password")),
@@ -178,7 +211,6 @@ export async function handleSignInWithNewPassword(
       options: {},
     });
   } catch (error) {
-    console.log(error);
     return getErrorMessage(error);
   }
 
@@ -201,7 +233,6 @@ export async function handleConfirmUserAttribute(
       confirmationCode: String(code),
     });
   } catch (error) {
-    console.log(error);
     return "error";
   }
 

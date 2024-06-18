@@ -5,7 +5,6 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const user = await authenticatedUser({ request, response });
   const isOnAuthArea = request.nextUrl.pathname.startsWith("/auth");
-
   if (!isOnAuthArea) {
     if (!user)
       return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
