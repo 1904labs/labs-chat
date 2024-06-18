@@ -8,7 +8,7 @@ import { useFormState } from "react-dom";
 import { handleResetPassword } from "@helpers/cognito-actions";
 import FormConfirmButton from "../FormConfirmButton";
 
-export default function SubmitResetPasswordFrom() {
+export default function SubmitResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(handleResetPassword, undefined);
   return (
     <form action={dispatch} className="max-w-lg space-y-3">

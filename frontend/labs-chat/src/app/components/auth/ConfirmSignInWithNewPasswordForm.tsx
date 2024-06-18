@@ -1,8 +1,5 @@
 "use client";
-import {
-  ExclamationCircleIcon,
-  KeyIcon,
-} from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleSignInWithNewPassword } from "@helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
