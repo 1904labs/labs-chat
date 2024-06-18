@@ -15,7 +15,7 @@ const Sidebar = () => {
         <span>Chat History</span>
       </div>
       <div className="flex flex-grow pl-5">
-        <ChatHistory forceDisable />
+        <ChatHistory />
       </div>
     </div>
   );

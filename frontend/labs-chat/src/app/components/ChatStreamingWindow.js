@@ -12,7 +12,7 @@ function makeDefaultMessage() {
     id: 0,
     speaker: "bot",
     message: "Hello! How can I help you today?",
-    date: getFormattedDateForUI(),
+    date: getFormattedDateForUI(new Date()),
   };
 }
 
@@ -123,7 +123,7 @@ const ChatStreamingWindow = () => {
         id: sessionId,
         speaker: "bot",
         message: finalChatTransaction.model_response,
-        date: getFormattedDateForUI(),
+        date: getFormattedDateForUI(new Date()),
       };
 
       await log(finalChatTransaction);
