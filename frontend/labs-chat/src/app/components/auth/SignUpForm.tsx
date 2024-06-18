@@ -15,7 +15,7 @@ import TextNavLink from "@components/TextNavLink";
 export default function SignUpForm() {
   const [errorMessage, dispatch] = useFormState(handleSignUp, undefined);
   return (
-    <form action={dispatch} className="space-y-3 max-w-md w-full p-8">
+    <form action={dispatch} className="w-full max-w-md space-y-3 p-8">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`mb-3 text-2xl`}>Create an Account</h1>
         <div className="w-full">

@@ -116,7 +116,10 @@ function ResendCodeLink() {
     return encodeURIComponent(searchParams.get("email") ?? "");
   };
   return (
-    <TextNavLink to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`} border>
+    <TextNavLink
+      to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}
+      border
+    >
       Need to resend the code?
     </TextNavLink>
   );

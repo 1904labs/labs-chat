@@ -4,7 +4,7 @@ const TextNavLink = ({ to, border = false, children }) => {
   return (
     <Link
       href={to}
-      className={`flex mt-4 ${border && 'border-solid border-blue-500 border p-2 rounded-lg'} cursor-pointer w-full align-middle justify-center space-x-2 text-blue-500 hover:text-blue-800`}
+      className={`mt-4 flex ${border && "rounded-lg border border-solid border-blue-500 p-2"} w-full cursor-pointer justify-center space-x-2 align-middle text-blue-500 hover:text-blue-800`}
     >
       {children}
     </Link>

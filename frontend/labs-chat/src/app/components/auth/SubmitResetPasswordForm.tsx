@@ -14,9 +14,7 @@ export default function SubmitResetPasswordForm() {
   return (
     <form action={dispatch} className="max-w-lg space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`mb-3 text-2xl`}>
-          Get a New Verification Code
-        </h1>
+        <h1 className={`mb-3 text-2xl`}>Get a New Verification Code</h1>
         <div className="w-full">
           <div>
             <label
@@ -53,9 +51,7 @@ export default function SubmitResetPasswordForm() {
             )}
           </div>
         </div>
-        <TextNavLink to={'/auth/login'}>
-          Back to login
-        </TextNavLink>
+        <TextNavLink to={"/auth/login"}>Back to login</TextNavLink>
       </div>
     </form>
   );
