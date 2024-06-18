@@ -19,7 +19,7 @@ export default function ConfirmSignUpForm() {
 
   return (
     <form action={dispatch} className="w-full max-w-80 space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pt-8 pb-8">
+      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-8 pt-8">
         <h1 className={`mb-3 text-2xl`}>Please confirm your account.</h1>
         <div className="w-full">
           <div>
@@ -35,7 +35,7 @@ export default function ConfirmSignUpForm() {
                 id="email"
                 type="email"
                 name="email"
-                defaultValue={searchParams.get("email") ?? ''}
+                defaultValue={searchParams.get("email") ?? ""}
                 placeholder="Enter your email address"
                 required
               />
@@ -84,11 +84,7 @@ export default function ConfirmSignUpForm() {
         </div>
         <FormConfirmButton label="Confirm" />
         <div className="flex h-16 items-end space-x-1">
-          <div
-            className="flex items-end"
-            aria-live="polite"
-            aria-atomic="true"
-          >
+          <div className="flex items-end" aria-live="polite" aria-atomic="true">
             {errorMessage && (
               <div className="flex space-x-3">
                 <ExclamationCircleIcon className="h-14 w-14 text-red-500" />
@@ -107,16 +103,18 @@ export default function ConfirmSignUpForm() {
 function ResendCodeLink() {
   const searchParams = useSearchParams();
   const getEncodedEmail = () => {
-    if (searchParams.get("email") === null) return '';
+    if (searchParams.get("email") === null) return "";
 
-    return encodeURIComponent(searchParams.get("email") ?? '');
+    return encodeURIComponent(searchParams.get("email") ?? "");
   };
-  return <div className="flex justify-center">
-    <Link
-      href={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}
-      className="mt-2 cursor-pointer text-blue-500"
-    >
-      Need to resend the code? Click here.
-    </Link>
-  </div >
+  return (
+    <div className="flex justify-center">
+      <Link
+        href={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}
+        className="mt-2 cursor-pointer text-blue-500"
+      >
+        Need to resend the code? Click here.
+      </Link>
+    </div>
+  );
 }

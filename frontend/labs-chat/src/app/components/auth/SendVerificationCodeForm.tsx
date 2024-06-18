@@ -35,7 +35,7 @@ export default function SendVerificationCodeForm() {
                 id="email"
                 type="email"
                 name="email"
-                defaultValue={searchParams.get("email") ?? ''}
+                defaultValue={searchParams.get("email") ?? ""}
                 placeholder="Enter your email address"
                 required
               />
@@ -52,7 +52,9 @@ export default function SendVerificationCodeForm() {
               {response?.errorMessage && (
                 <>
                   <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
-                  <p className="text-sm text-red-500">{response.errorMessage}</p>
+                  <p className="text-sm text-red-500">
+                    {response.errorMessage}
+                  </p>
                 </>
               )}
               {response?.message && (

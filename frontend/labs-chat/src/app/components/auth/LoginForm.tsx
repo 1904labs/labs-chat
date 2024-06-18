@@ -58,8 +58,8 @@ export default function LoginForm() {
             </div>
           </div>
         </div>
-        
-        <FormConfirmButton label="Log in"/>
+
+        <FormConfirmButton label="Log in" />
         <div className="flex justify-center">
           <Link
             href="/auth/resetPassword/submit"
