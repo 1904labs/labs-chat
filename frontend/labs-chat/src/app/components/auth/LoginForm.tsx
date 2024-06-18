@@ -62,7 +62,7 @@ export default function LoginForm() {
         <FormConfirmButton label="Log in" />
         <div className="flex h-8 items-end space-x-1"></div>
         <TextNavLink to="/auth/signUp">
-        {"Don't have an account? "} Sign up.
+          {"Don't have an account? "} Sign up.
         </TextNavLink>
         <TextNavLink to="/auth/resetPassword/submit">
           Forgot Password?

@@ -64,8 +64,8 @@ export default function SendVerificationCodeForm() {
             </div>
           </div>
           <TextNavLink to="/auth/login">
-              <ArrowLeftCircleIcon className="h-5 w-5 text-blue-500" />
-              <span>Back to Sign In</span>
+            <ArrowLeftCircleIcon className="h-5 w-5 text-blue-500" />
+            <span>Back to Sign In</span>
           </TextNavLink>
         </div>
       </div>

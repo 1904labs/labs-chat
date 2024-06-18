@@ -86,7 +86,11 @@ export default function ConfirmSignUpForm() {
         <FormConfirmButton label="Confirm" />
         {errorMessage && (
           <div className="flex h-16 items-end space-x-1">
-            <div className="flex items-end" aria-live="polite" aria-atomic="true">
+            <div
+              className="flex items-end"
+              aria-live="polite"
+              aria-atomic="true"
+            >
               <div className="flex space-x-3">
                 <ExclamationCircleIcon className="h-14 w-14 text-red-500" />
                 <p className="text-sm text-red-500">{errorMessage}</p>
@@ -113,8 +117,8 @@ function ResendCodeLink() {
     return encodeURIComponent(searchParams.get("email") ?? "");
   };
   return (
-   <TextNavLink to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}>
-        Need to resend the code?
+    <TextNavLink to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}>
+      Need to resend the code?
     </TextNavLink>
   );
 }
