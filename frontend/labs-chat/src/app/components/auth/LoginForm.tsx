@@ -9,6 +9,7 @@ import { useFormState } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
 import Link from "next/link";
 import FormConfirmButton from "@components/FormConfirmButton";
+import TextNavLink from "@components/TextNavLink";
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
@@ -59,30 +60,16 @@ export default function LoginForm() {
         </div>
 
         <FormConfirmButton label="Log in" />
-        <div className="flex justify-center">
-          <Link
-            href="/auth/resetPassword/submit"
-            className="mt-2 cursor-pointer text-blue-500"
-          >
-            Forgot password? Click here.
-          </Link>
-        </div>
-        <div className="flex justify-center">
-          <Link
-            href="/auth/signUp"
-            className="mt-2 cursor-pointer text-blue-500"
-          >
-            {"Don't have an account? "} Sign up.
-          </Link>
-        </div>
-        <div className="flex justify-center">
-          <Link
-            href="/auth/confirmSignUp"
-            className="mt-2 cursor-pointer text-blue-500"
-          >
-            Need to confirm a code? Click here.
-          </Link>
-        </div>
+        <div className="flex h-8 items-end space-x-1"></div>
+        <TextNavLink to="/auth/signUp">
+        {"Don't have an account? "} Sign up.
+        </TextNavLink>
+        <TextNavLink to="/auth/resetPassword/submit">
+          Forgot Password?
+        </TextNavLink>
+        <TextNavLink to="/auth/confirmSignUp">
+          Need to confirm a code?
+        </TextNavLink>
         <div className="flex h-8 items-end space-x-1">
           <div
             className="flex h-8 items-end space-x-1"

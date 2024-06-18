@@ -5,12 +5,14 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
   LockClosedIcon,
+  ArrowLeftCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleConfirmSignUp } from "@/helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
+import TextNavLink from "@components/TextNavLink";
 
 export default function ConfirmSignUpForm() {
   const searchParams = useSearchParams();
@@ -82,18 +84,22 @@ export default function ConfirmSignUpForm() {
           </div>
         </div>
         <FormConfirmButton label="Confirm" />
-        <div className="flex h-16 items-end space-x-1">
-          <div className="flex items-end" aria-live="polite" aria-atomic="true">
-            {errorMessage && (
+        {errorMessage && (
+          <div className="flex h-16 items-end space-x-1">
+            <div className="flex items-end" aria-live="polite" aria-atomic="true">
               <div className="flex space-x-3">
                 <ExclamationCircleIcon className="h-14 w-14 text-red-500" />
                 <p className="text-sm text-red-500">{errorMessage}</p>
               </div>
-            )}
+            </div>
           </div>
-        </div>
+        )}
 
         <ResendCodeLink />
+        <TextNavLink to="/auth/signIn">
+          <ArrowLeftCircleIcon className="h-5 w-5" />
+          <span>Back to Sign In</span>
+        </TextNavLink>
       </div>
     </form>
   );
@@ -107,13 +113,8 @@ function ResendCodeLink() {
     return encodeURIComponent(searchParams.get("email") ?? "");
   };
   return (
-    <div className="flex justify-center">
-      <Link
-        href={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}
-        className="mt-2 cursor-pointer text-blue-500"
-      >
-        Need to resend the code? Click here.
-      </Link>
-    </div>
+   <TextNavLink to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}>
+        Need to resend the code?
+    </TextNavLink>
   );
 }

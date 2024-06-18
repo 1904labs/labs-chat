@@ -1,14 +1,16 @@
 "use client";
 
 import {
+  ArrowLeftCircleIcon,
   AtSymbolIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
 
 import { handleSendEmailVerificationCode } from "@/helpers/cognito-actions";
 import { useFormState } from "react-dom";
-import FormConfirmButton from "../FormConfirmButton";
+import FormConfirmButton from "@components/FormConfirmButton";
 import { useSearchParams } from "next/navigation";
+import TextNavLink from "@components/TextNavLink";
 
 export default function SendVerificationCodeForm() {
   const searchParams = useSearchParams();
@@ -61,6 +63,10 @@ export default function SendVerificationCodeForm() {
               )}
             </div>
           </div>
+          <TextNavLink to="/auth/login">
+              <ArrowLeftCircleIcon className="h-5 w-5 text-blue-500" />
+              <span>Back to Sign In</span>
+          </TextNavLink>
         </div>
       </div>
     </form>
