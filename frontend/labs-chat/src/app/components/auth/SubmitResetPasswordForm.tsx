@@ -7,6 +7,7 @@ import {
 import { useFormState } from "react-dom";
 import { handleResetPassword } from "@helpers/cognito-actions";
 import FormConfirmButton from "../FormConfirmButton";
+import TextNavLink from "../TextNavLink";
 
 export default function SubmitResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(handleResetPassword, undefined);
@@ -14,7 +15,7 @@ export default function SubmitResetPasswordForm() {
     <form action={dispatch} className="max-w-lg space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
         <h1 className={`mb-3 text-2xl`}>
-          Please enter your email to get confirmation code.
+          Get a New Verification Code
         </h1>
         <div className="w-full">
           <div>
@@ -52,6 +53,9 @@ export default function SubmitResetPasswordForm() {
             )}
           </div>
         </div>
+        <TextNavLink to={'/auth/login'}>
+          Back to login
+        </TextNavLink>
       </div>
     </form>
   );

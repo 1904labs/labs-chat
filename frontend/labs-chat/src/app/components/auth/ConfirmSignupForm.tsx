@@ -11,7 +11,6 @@ import { useFormState } from "react-dom";
 import { handleConfirmSignUp } from "@/helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
 import { useSearchParams } from "next/navigation";
-import Link from "next/link";
 import TextNavLink from "@components/TextNavLink";
 
 export default function ConfirmSignUpForm() {
@@ -21,7 +20,7 @@ export default function ConfirmSignUpForm() {
   return (
     <form action={dispatch} className="w-full max-w-80 space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-8 pt-8">
-        <h1 className={`mb-3 text-2xl`}>Please confirm your account.</h1>
+        <h1 className={`mb-3 text-2xl`}>Confirm Your Email</h1>
         <div className="w-full">
           <div>
             <label
@@ -100,9 +99,9 @@ export default function ConfirmSignUpForm() {
         )}
 
         <ResendCodeLink />
-        <TextNavLink to="/auth/signIn">
-          <ArrowLeftCircleIcon className="h-5 w-5" />
-          <span>Back to Sign In</span>
+        <TextNavLink to="/auth/login">
+          <ArrowLeftCircleIcon className="h-6 w-6 text-blue-500" />
+          <div>Back to log in</div>
         </TextNavLink>
       </div>
     </form>
@@ -117,7 +116,7 @@ function ResendCodeLink() {
     return encodeURIComponent(searchParams.get("email") ?? "");
   };
   return (
-    <TextNavLink to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`}>
+    <TextNavLink to={`/auth/resendVerificationCode?email=${getEncodedEmail()}`} border>
       Need to resend the code?
     </TextNavLink>
   );

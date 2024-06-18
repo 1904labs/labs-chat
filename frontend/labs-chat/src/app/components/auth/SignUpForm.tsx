@@ -5,18 +5,19 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
   UserCircleIcon,
+  ArrowLeftCircleIcon,
 } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleSignUp } from "@helpers/cognito-actions";
-import Link from "next/link";
 import FormConfirmButton from "@components/FormConfirmButton";
+import TextNavLink from "@components/TextNavLink";
 
 export default function SignUpForm() {
   const [errorMessage, dispatch] = useFormState(handleSignUp, undefined);
   return (
-    <form action={dispatch} className="max-w-xl space-y-3">
+    <form action={dispatch} className="space-y-3 max-w-md w-full p-8">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`mb-3 text-2xl`}>Please create an account.</h1>
+        <h1 className={`mb-3 text-2xl`}>Create an Account</h1>
         <div className="w-full">
           <div>
             <label
@@ -80,12 +81,10 @@ export default function SignUpForm() {
         </div>
         <FormConfirmButton label="Create account" />
         <div className="flex justify-center">
-          <Link
-            href="/auth/login"
-            className="mt-2 cursor-pointer text-blue-500"
-          >
-            Already have an account? Log in.
-          </Link>
+          <TextNavLink to="/auth/login">
+            <ArrowLeftCircleIcon className="h-6 w-6 text-blue-500" />
+            <div>Back to log in</div>
+          </TextNavLink>
         </div>
         <div className="flex h-8 items-end space-x-1">
           <div

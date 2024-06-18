@@ -7,7 +7,6 @@ import {
 } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
-import Link from "next/link";
 import FormConfirmButton from "@components/FormConfirmButton";
 import TextNavLink from "@components/TextNavLink";
 
@@ -16,7 +15,7 @@ export default function LoginForm() {
   return (
     <form action={dispatch} className="w-full max-w-80 space-y-3">
       <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`mb-3 text-2xl`}>Please log in to continue.</h1>
+        <h1 className={`mb-3 text-2xl`}>Log In</h1>
         <div className="w-full">
           <div>
             <label
@@ -61,13 +60,13 @@ export default function LoginForm() {
 
         <FormConfirmButton label="Log in" />
         <div className="flex h-8 items-end space-x-1"></div>
-        <TextNavLink to="/auth/signUp">
+        <TextNavLink to="/auth/signUp" border>
           {"Don't have an account? "} Sign up.
         </TextNavLink>
-        <TextNavLink to="/auth/resetPassword/submit">
+        <TextNavLink to="/auth/resetPassword/submit" border>
           Forgot Password?
         </TextNavLink>
-        <TextNavLink to="/auth/confirmSignUp">
+        <TextNavLink to="/auth/confirmSignUp" border>
           Need to confirm a code?
         </TextNavLink>
         <div className="flex h-8 items-end space-x-1">
