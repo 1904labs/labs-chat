@@ -5,8 +5,7 @@ import {
   KeyIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
-import { ArrowRightIcon } from "@heroicons/react/20/solid";
-import { useFormState, useFormStatus } from "react-dom";
+import { useFormState } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
 import Link from "next/link";
 import FormConfirmButton from "@components/FormConfirmButton";

@@ -4,7 +4,6 @@ import {
   AtSymbolIcon,
   KeyIcon,
   ExclamationCircleIcon,
-  LockOpenIcon,
   LockClosedIcon,
 } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";

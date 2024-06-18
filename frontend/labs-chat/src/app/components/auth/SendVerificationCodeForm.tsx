@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowRightIcon,
   AtSymbolIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
