@@ -1,4 +1,5 @@
-import { DynamoDBSession } from "@/app/types";
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 import AWS from "aws-sdk";
 
 /**
@@ -15,9 +16,6 @@ AWS.config.update({
 // export the s3 option
 export const S3_Conn = new AWS.S3();
 
-// export the dynamodb option
-export const DynamoDB_Conn = new AWS.DynamoDB();
-
-export function convertToDynamoDBItem(dynamoDBSession) {
-  return AWS.DynamoDB.Converter.marshall(dynamoDBSession);
-}
+// export the dynamodb document client
+const dynamoDBClient = new DynamoDBClient({region: "us-east-1"});
+export const dynamoDBDocumentClient = DynamoDBDocumentClient.from(dynamoDBClient);
