@@ -1,8 +1,9 @@
 "use server";
 
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
-import { formatClaude3DataChunk, getClient } from "@/helpers/bedrock";
-import { Memory } from "@/helpers/memory";
+import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
+import { Memory } from "@helpers/memory";
+import { getSystemPrompt } from "@helpers/system-prompt";
 
 import { dynamoDBDocumentClient } from "@helpers/aws";
 
@@ -10,9 +11,12 @@ import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+// aquire the system prompt from the s3 bucket
+const systemPrompt = await getSystemPrompt(process.env.SYSTEM_PROMPT_FILE);
+
 // create a memory object to store the context for the conversation
 // we will need to keep track to which session this applies
-const memory = new Memory(false);
+const memory = new Memory(false, systemPrompt, process.env.SYSTEM_PROMPT_FILE);
 
 function iteratorToStream(iterator) {
   return new ReadableStream({
@@ -52,7 +56,6 @@ function iteratorToStream(iterator) {
           memory.accumulateAIStream(valueString.model_response);
         }
         valueString.system_prompt = memory.getSystemPrompt();
-
         controller.enqueue(JSON.stringify(valueString));
       }
     },

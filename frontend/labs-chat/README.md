@@ -2,7 +2,17 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+### Locally
+
+#### Prerequisites
+
+1. AWS credentials set in `.env.local`
+
+   - go to `go.aws.1904.io`
+   - select the appropriate project (needs access to Bedrock Models configured, S3, DynamoDB)
+   - Set env variables, similar to env.sample
+
+1. Run the development server:
 
 ```bash
 npm run dev
@@ -20,17 +30,43 @@ You can start editing the page by modifying `app/page.js`. The page auto-updates
 
 This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+## AWS Resources
 
-To learn more about Next.js, take a look at the following resources:
+This project has several resources in AWS.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+It also relies on document format within AWS
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### System Prompts
 
-## Deploy on Vercel
+Storing System Prompts within S3:
+Path:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+S3 / labs_chat_data_bucket / system_prompts / chat / filename_versionNumber
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+(Filename) - Human readable identifier. Maybe a summary or department name,
+
+Format:
+
+```
+[filename]_[5-digit version number, i.e. 00001]
+```
+
+Contents of the json file within S3:
+JSON with a text field `prompt`
+
+```
+{
+    "prompt": "You are a friendly, AI assistant, who answers my questions in a businesslike manner."
+}
+```
+
+### Steps
+
+1. Upload json file
+1. Update the config value key:
+
+```
+SYSTEM_PROMPT_FILE="[file name]"
+```
