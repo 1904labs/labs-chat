@@ -5,7 +5,6 @@ import {
   signIn,
   signOut,
   resendSignUpCode,
-  autoSignIn,
   updateUserAttribute,
   type UpdateUserAttributeOutput,
   confirmUserAttribute,
@@ -120,7 +119,6 @@ export async function handleSignIn(
       password: String(formData.get("password")),
     });
     const { nextStep } = data;
-    console.log(`nextStep: ${JSON.stringify(data, null, 2)}`);
     if (nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
       redirectLink = "/auth/confirmSignIn";
     }
@@ -247,7 +245,6 @@ export async function handleResetPassword(
     }
     const username = String(formData.get("email"));
     await resetPassword({ username });
-    console.log(`Reset password email sent to ${username}`);
   } catch (error) {
     return getErrorMessage(error);
   }
@@ -264,8 +261,8 @@ export async function handleConfirmResetPassword(
       confirmationCode: String(formData.get("code")),
       newPassword: String(formData.get("password")),
     });
+    return handleSignIn(prevState, formData);
   } catch (error) {
     return getErrorMessage(error);
   }
-  redirect("/auth/login");
 }

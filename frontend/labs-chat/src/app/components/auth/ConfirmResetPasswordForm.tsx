@@ -7,6 +7,7 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleConfirmResetPassword } from "@helpers/cognito-actions";
+import FormConfirmButton from "@components/FormConfirmButton";
 
 export default function ConfirmResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(
@@ -78,7 +79,7 @@ export default function ConfirmResetPasswordForm() {
             </div>
           </div>
         </div>
-        <ResetPasswordButton />
+        <FormConfirmButton label="Reset Password" />
         <div className="flex h-8 items-end space-x-1">
           <div
             className="flex h-8 items-end space-x-1"
@@ -95,18 +96,5 @@ export default function ConfirmResetPasswordForm() {
         </div>
       </div>
     </form>
-  );
-}
-
-function ResetPasswordButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      className="mt-4 w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
-      disabled={pending}
-    >
-      Reset Password <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-    </button>
   );
 }

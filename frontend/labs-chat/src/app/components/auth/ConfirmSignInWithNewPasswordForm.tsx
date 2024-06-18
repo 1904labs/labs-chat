@@ -7,6 +7,7 @@ import {
 import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleSignInWithNewPassword } from "@helpers/cognito-actions";
+import FormConfirmButton from "@components/FormConfirmButton";
 
 export default function ConfirmSignInWithNewPasswordForm() {
   const [errorMessage, dispatch] = useFormState(
@@ -61,7 +62,7 @@ export default function ConfirmSignInWithNewPasswordForm() {
             </div>
           </div>
         </div>
-        <ConfirmNewPasswordButton />
+        <FormConfirmButton label="Set New Password" />
         <div className="flex h-8 items-end space-x-1">
           <div
             className="flex h-8 items-end space-x-1"
@@ -78,19 +79,5 @@ export default function ConfirmSignInWithNewPasswordForm() {
         </div>
       </div>
     </form>
-  );
-}
-
-function ConfirmNewPasswordButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      className="mt-4 w-full rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
-      disabled={pending}
-    >
-      Set New Password{" "}
-      <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-    </button>
   );
 }

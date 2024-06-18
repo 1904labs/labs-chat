@@ -10,6 +10,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { useFormState, useFormStatus } from "react-dom";
 import { handleSignUp } from "@helpers/cognito-actions";
 import Link from "next/link";
+import FormConfirmButton from "@components/FormConfirmButton";
 
 export default function SignUpForm() {
   const [errorMessage, dispatch] = useFormState(handleSignUp, undefined);
@@ -78,7 +79,7 @@ export default function SignUpForm() {
             </div>
           </div>
         </div>
-        <SignUpButton />
+        <FormConfirmButton label="Create account" />
         <div className="flex justify-center">
           <Link
             href="/auth/login"
@@ -103,18 +104,5 @@ export default function SignUpForm() {
         </div>
       </div>
     </form>
-  );
-}
-
-function SignUpButton() {
-  const { pending } = useFormStatus();
-
-  return (
-    <button
-      className="mt-4 flex w-full max-w-80 justify-around rounded bg-blue-500 px-4 py-2 font-bold text-white hover:bg-blue-600"
-      disabled={pending}
-    >
-      Create account <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
-    </button>
   );
 }
