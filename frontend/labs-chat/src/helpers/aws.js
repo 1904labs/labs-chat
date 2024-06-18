@@ -17,5 +17,6 @@ AWS.config.update({
 export const S3_Conn = new AWS.S3();
 
 // export the dynamodb document client
-const dynamoDBClient = new DynamoDBClient({region: "us-east-1"});
-export const dynamoDBDocumentClient = DynamoDBDocumentClient.from(dynamoDBClient);
+const dynamoDBClient = new DynamoDBClient({ region: "us-east-1" });
+export const dynamoDBDocumentClient =
+  DynamoDBDocumentClient.from(dynamoDBClient);

@@ -20,7 +20,7 @@ export type DynamoDBSession = {
   system_prompt_s3_ptr: string;
   session_name: string;
   is_hidden: boolean;
-}
+};
 
 export type ConversationSegment = {
   role: string;

@@ -151,7 +151,7 @@ export class Memory {
       conversation_s3_link: this.session.conversation_s3_link,
       system_prompt_s3_ptr: this.session.system_prompt_s3_ptr,
       session_name: this.session.session_name,
-      is_hidden: this.session.is_hidden
+      is_hidden: this.session.is_hidden,
     };
   }
 }
