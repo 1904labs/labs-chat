@@ -12,6 +12,16 @@ export type Session = {
   ai_stream: string;
 };
 
+export type DynamoDBSession = {
+  session_id: string;
+  user_id: string;
+  timestamp: number;
+  conversation_s3_link: string;
+  system_prompt_s3_ptr: string;
+  session_name: string;
+  is_hidden: boolean;
+};
+
 export type ConversationSegment = {
   role: string;
   content: (ConversationContentText | ConversationContentImage)[];

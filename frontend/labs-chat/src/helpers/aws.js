@@ -1,6 +1,6 @@
-import { S3Client } from "@aws-sdk/client-s3";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
+import { S3Client } from "@aws-sdk/client-s3";
 
 // Create an S3 client service object
 // Only do this once and reuse the S3 client across the app
@@ -11,8 +11,7 @@ export const S3_client = new S3Client({
   region: "us-east-1",
 });
 
-export const dynamoDBClient = new DynamoDBClient({
-  region: "us-east-1",
-});
+// export the dynamodb document client
+const dynamoDBClient = new DynamoDBClient({ region: "us-east-1" });
 export const dynamoDBDocumentClient =
   DynamoDBDocumentClient.from(dynamoDBClient);
