@@ -13,7 +13,3 @@ Amplify.configure(
   },
   { ssr: true },
 );
-
-export default function ConfigureAmplifyClientSide() {
-  return null;
-}
