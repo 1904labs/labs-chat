@@ -92,7 +92,7 @@ export async function handleConfirmSignUp(
       throw new Error("Invalid email domain");
     }
 
-    // these are unused variables but we will keep 
+    // these are unused variables but we will keep
     // them here so the next developer can see what options
     // are available to parse from the response
     const { isSignUpComplete, nextStep } = await confirmSignUp({
@@ -101,8 +101,7 @@ export async function handleConfirmSignUp(
     });
     return handleSignIn(prevState, formData);
   } catch (error) {
-
-    // this is an error but it's a good thing. Just says that 
+    // this is an error but it's a good thing. Just says that
     // the user is already confirmed and we can proceed with sign in
     if (error.message.includes(AMPLIFY_AUTH_STEPS.STATUS_CONFIRMED)) {
       return handleSignIn(prevState, formData);
