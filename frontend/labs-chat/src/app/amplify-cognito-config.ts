@@ -1,5 +1,3 @@
-"use client";
-
 import { Amplify, type ResourcesConfig } from "aws-amplify";
 
 export const authConfig: ResourcesConfig["Auth"] = {
@@ -15,7 +13,3 @@ Amplify.configure(
   },
   { ssr: true },
 );
-
-export default function ConfigureAmplifyClientSide() {
-  return null;
-}
