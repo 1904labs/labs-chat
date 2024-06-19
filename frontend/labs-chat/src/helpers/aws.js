@@ -11,8 +11,8 @@ export const S3_client = new S3Client({
   region: "us-east-1",
 });
 
-
 export const dynamoDBClient = new DynamoDBClient({
   region: "us-east-1",
 });
-export const dynamoDBDocumentClient = DynamoDBDocumentClient.from(dynamoDBClient);
+export const dynamoDBDocumentClient =
+  DynamoDBDocumentClient.from(dynamoDBClient);

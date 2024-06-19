@@ -2,7 +2,7 @@
 import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import ChatHistoryListItem from "./ChatHistoryListItem";
-import { getFormattedDateForUI } from "@/helpers/dates";
+import { getFormattedDateForUI } from "@helpers/dates";
 import { Session } from "../types";
 
 interface Props {
@@ -12,23 +12,19 @@ interface Props {
 const ChatHistory: FunctionComponent<Props> = ({ forceDisable }) => {
   const [sessions, setSessions] = useState<Session[]>([]);
 
-  const fetchSessions = useCallback(async () => {
-    const data = await fetch("/api/chatSessions", {
-      method: "GET",
-    })
-      .then(r => r.json())
-      .then(rj => rj as Session[])
-      .catch(e => {
+  const fetchSessions = useCallback(async (): Promise<Session[]> => {
+    return await fetch("/api/chatSessions", { method: "GET"})
+      .then((r) => r.json())
+      .then((rj) => rj as Session[])
+      .catch((e) => {
         console.error(e);
         return [];
       });
-
-    setSessions(data);
-  }, [])
+  }, []);
 
   useEffect(() => {
     fetchSessions()
-      .catch(e => console.error(e));
+      .then(data => setSessions(data))
   }, [fetchSessions]);
 
   return (
