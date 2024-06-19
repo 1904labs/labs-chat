@@ -151,7 +151,6 @@ export class Memory {
   getSessionId(): string {
     return this.session.session_id;
   }
-
   getDynamoDBSession(): DynamoDBSession {
     return {
       session_id: this.session.session_id,
@@ -168,18 +167,10 @@ export class Memory {
     const context = this.session.conversation_context;
     const sessionId = this.session.session_id;
     const user_id = this.session.user_id;
-    let bucketName;
-    let convFileName;
+    const bucketName = process.env.S3_BUCKET;
+    const convFileName = `conversations/${user_id}/${sessionId}.json`;
     if (this.session.conversation_s3_link == "") {
-        bucketName = process.env.S3_BUCKET;
-        convFileName = `conversations/${user_id}/${sessionId}.json`;
-        this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
-    }
-    else {
-        const partialPath = this.session.conversation_s3_link.replace("s3://", "");
-        const firstSlash = partialPath.indexOf("/");
-        bucketName = partialPath.substring(0, firstSlash);
-        convFileName = partialPath.substring(firstSlash + 1);
+        this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`
     }
     const params = {
       Bucket: bucketName,
@@ -191,6 +182,5 @@ export class Memory {
       ContentType: "application/json",
     };
     const command = new PutObjectCommand(params);
-    await S3_client.send(command);
-  }
+    await S3_client.send(command);  }
 }
