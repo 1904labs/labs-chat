@@ -8,7 +8,7 @@ import React, {
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import ChatHistoryListItem from "@components/ChatHistoryListItem";
 import { getFormattedDateForUI } from "@helpers/dates";
-import { Session } from "../types";
+import { Session } from "@/app/types";
 
 interface Props {
   forceDisable: boolean;
