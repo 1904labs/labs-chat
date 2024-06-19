@@ -5,13 +5,14 @@ export async function middleware(request: NextRequest) {
   const response = NextResponse.next();
   const user = await authenticatedUser({ request, response });
   const isOnAuthArea = request.nextUrl.pathname.startsWith("/auth");
-  if (!isOnAuthArea) {
-    if (!user)
-      return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
-    return response;
-  } else if (user) {
-    return response;
-  }
+
+  // if the user is authenticated or don't need
+  // to be authenticated, return the response
+  if (isOnAuthArea || user) return response;
+
+  // if the user is not authenticated and is not on the auth area
+  // redirect to the login page
+  return NextResponse.redirect(new URL("/auth/login", request.nextUrl));
 }
 
 export const config = {
