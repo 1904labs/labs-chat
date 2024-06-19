@@ -1,4 +1,3 @@
-// use client included for future use
 import React from "react";
 import { CogIcon, EllipsisVerticalIcon } from "@heroicons/react/20/solid";
 import Image from "next/image";
