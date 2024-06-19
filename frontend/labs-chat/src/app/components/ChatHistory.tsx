@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
-import ChatHistoryListItem from "./ChatHistoryListItem";
+import ChatHistoryListItem from "@components/ChatHistoryListItem";
 import { getFormattedDateForUI } from "@helpers/dates";
 import { Session } from "../types";
 
