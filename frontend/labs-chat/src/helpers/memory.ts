@@ -9,7 +9,6 @@ import {
 import { S3_client } from "@helpers/aws";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
-
 export class Memory {
   private session: Session;
   private verbose: boolean;
@@ -150,18 +149,23 @@ export class Memory {
   getSessionId(): string {
     return this.session.session_id;
   }
-  setConversationS3Ptr(s3Location) {
-    this.session.conversation_s3_link = s3Location;
-  }
   async storeConversation() {
     const history = this.session.conversation_history;
     const context = this.session.conversation_context;
     const sessionId = this.session.session_id;
     const user_id = this.session.user_id;
-    const bucketName = process.env.S3_BUCKET;
-    const convFileName = `conversations/${user_id}/${sessionId}.json`;
+    let bucketName;
+    let convFileName;
     if (this.session.conversation_s3_link == "") {
-        this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`
+        bucketName = process.env.S3_BUCKET;
+        convFileName = `conversations/${user_id}/${sessionId}.json`;
+        this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
+    }
+    else {
+        const partialPath = this.session.conversation_s3_link.replace("s3://", "");
+        const firstSlash = partialPath.indexOf("/");
+        bucketName = partialPath.substring(0, firstSlash);
+        convFileName = partialPath.substring(firstSlash + 1);
     }
     const params = {
       Bucket: bucketName,
@@ -173,5 +177,6 @@ export class Memory {
       ContentType: "application/json",
     };
     const command = new PutObjectCommand(params);
-    await S3_client.send(command);  }
+    await S3_client.send(command);
+  }
 }
