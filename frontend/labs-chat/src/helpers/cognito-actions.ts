@@ -13,6 +13,7 @@ import {
   confirmSignIn,
 } from "aws-amplify/auth";
 import { getErrorMessage } from "@/helpers/get-error-mesage";
+import { AMPLIFY_AUTH_STEPS } from "@/constants/authSteps";
 
 const ALLOWED_DOMAINS = ["1904labs.com"];
 
@@ -68,10 +69,10 @@ export async function handleSendEmailVerificationCode(
       message: "Code sent successfully",
     };
   } catch (error) {
-    currentState = {
+    return (currentState = {
       ...prevState,
       errorMessage: getErrorMessage(error),
-    };
+    });
   }
 
   if (email) {
@@ -90,13 +91,20 @@ export async function handleConfirmSignUp(
     if (!ALLOWED_DOMAINS.some((domain) => email.includes(domain))) {
       throw new Error("Invalid email domain");
     }
+
+    // these are unused variables but we will keep 
+    // them here so the next developer can see what options
+    // are available to parse from the response
     const { isSignUpComplete, nextStep } = await confirmSignUp({
       username: email,
       confirmationCode: String(formData.get("code")),
     });
     return handleSignIn(prevState, formData);
   } catch (error) {
-    if (error.message.includes("status is CONFIRMED")) {
+
+    // this is an error but it's a good thing. Just says that 
+    // the user is already confirmed and we can proceed with sign in
+    if (error.message.includes(AMPLIFY_AUTH_STEPS.STATUS_CONFIRMED)) {
       return handleSignIn(prevState, formData);
     } else {
       return getErrorMessage(error);
@@ -119,10 +127,10 @@ export async function handleSignIn(
       password: String(formData.get("password")),
     });
     const { nextStep } = data;
-    if (nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
+    if (nextStep.signInStep === AMPLIFY_AUTH_STEPS.CONFIRM_SIGN_IN) {
       redirectLink = "/auth/confirmSignIn";
     }
-    if (nextStep.signInStep === "CONFIRM_SIGN_UP") {
+    if (nextStep.signInStep === AMPLIFY_AUTH_STEPS.CONFIRM_SIGN_UP) {
       await resendSignUpCode({
         username: userEmail,
       });
@@ -182,10 +190,10 @@ function handleUpdateUserAttributeNextSteps(output: UpdateUserAttributeOutput) {
   const { nextStep } = output;
 
   switch (nextStep.updateAttributeStep) {
-    case "CONFIRM_ATTRIBUTE_WITH_CODE":
+    case AMPLIFY_AUTH_STEPS.CONFIRM_ATTRIBUTE:
       const codeDeliveryDetails = nextStep.codeDeliveryDetails;
       return `Confirmation code was sent to ${codeDeliveryDetails?.deliveryMedium}.`;
-    case "DONE":
+    case AMPLIFY_AUTH_STEPS.DONE:
       return "success";
   }
 }
