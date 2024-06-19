@@ -6,6 +6,9 @@ import {
   ConversationContentImage,
   ConversationSegment,
 } from "./../app/types";
+import { S3_client } from "@helpers/aws";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+
 
 export class Memory {
   private session: Session;
@@ -150,4 +153,25 @@ export class Memory {
   setConversationS3Ptr(s3Location) {
     this.session.conversation_s3_link = s3Location;
   }
+  async storeConversation() {
+    const history = this.session.conversation_history;
+    const context = this.session.conversation_context;
+    const sessionId = this.session.session_id;
+    const user_id = this.session.user_id;
+    const bucketName = process.env.S3_BUCKET;
+    const convFileName = `conversations/${user_id}/${sessionId}.json`;
+    if (this.session.conversation_s3_link == "") {
+        this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`
+    }
+    const params = {
+      Bucket: bucketName,
+      Key: convFileName,
+      Body: JSON.stringify({
+        conversationHistory: history,
+        conversationContext: context,
+      }),
+      ContentType: "application/json",
+    };
+    const command = new PutObjectCommand(params);
+    await S3_client.send(command);  }
 }
