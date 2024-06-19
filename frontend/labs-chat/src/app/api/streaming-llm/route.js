@@ -1,8 +1,13 @@
 "use server";
+
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
 import { Memory } from "@helpers/memory";
 import { getSystemPrompt } from "@helpers/system-prompt";
+
+import { dynamoDBDocumentClient } from "@helpers/aws";
+
+import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -30,6 +35,13 @@ function iteratorToStream(iterator) {
       if (done) {
         // append the final message to the context
         memory.commitAIStream();
+
+        // save to dynamodb
+        const command = new PutCommand({
+          TableName: process.env.DYNAMODB_TABLE_NAME,
+          Item: memory.getDynamoDBSession(),
+        });
+        await dynamoDBDocumentClient.send(command);
 
         controller.close();
       } else {
