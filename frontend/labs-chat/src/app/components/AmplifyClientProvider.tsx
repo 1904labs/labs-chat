@@ -1,6 +1,6 @@
 "use client";
 import { Amplify } from "aws-amplify";
-import { authConfig } from "../amplify-cognito-config";
+import { authConfig } from "@/app/amplify-cognito-config";
 
 export default function AmplifyClientProvider() {
   Amplify.configure(
