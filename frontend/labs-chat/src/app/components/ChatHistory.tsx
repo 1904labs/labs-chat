@@ -1,5 +1,10 @@
 "use client";
-import React, { FunctionComponent, useCallback, useEffect, useState } from "react";
+import React, {
+  FunctionComponent,
+  useCallback,
+  useEffect,
+  useState,
+} from "react";
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import ChatHistoryListItem from "./ChatHistoryListItem";
 import { getFormattedDateForUI } from "@helpers/dates";
@@ -13,7 +18,7 @@ const ChatHistory: FunctionComponent<Props> = ({ forceDisable }) => {
   const [sessions, setSessions] = useState<Session[]>([]);
 
   const fetchSessions = useCallback(async (): Promise<Session[]> => {
-    return await fetch("/api/chatSessions", { method: "GET"})
+    return await fetch("/api/chatSessions", { method: "GET" })
       .then((r) => r.json())
       .then((rj) => rj as Session[])
       .catch((e) => {
@@ -23,8 +28,7 @@ const ChatHistory: FunctionComponent<Props> = ({ forceDisable }) => {
   }, []);
 
   useEffect(() => {
-    fetchSessions()
-      .then(data => setSessions(data))
+    fetchSessions().then((data) => setSessions(data));
   }, [fetchSessions]);
 
   return (
