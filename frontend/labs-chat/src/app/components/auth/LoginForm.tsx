@@ -1,10 +1,6 @@
 "use client";
 
-import {
-  AtSymbolIcon,
-  KeyIcon,
-  ExclamationCircleIcon,
-} from "@heroicons/react/24/outline";
+import { AtSymbolIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";

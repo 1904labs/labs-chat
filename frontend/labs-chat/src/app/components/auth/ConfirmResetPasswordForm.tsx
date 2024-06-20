@@ -1,15 +1,11 @@
 "use client";
-import {
-  AtSymbolIcon,
-  ExclamationCircleIcon,
-  KeyIcon,
-} from "@heroicons/react/24/outline";
+import { AtSymbolIcon, KeyIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleConfirmResetPassword } from "@helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
 import FormWrapper from "@components/auth/ui/FormWrapper";
 import FormInput from "@components/auth/ui/FormInput";
-import FormErrorMessage from "./ui/FormErrorMessage";
+import FormErrorMessage from "@components/auth/ui/FormErrorMessage";
 
 export default function ConfirmResetPasswordForm() {
   const [errorMessage, dispatch] = useFormState(

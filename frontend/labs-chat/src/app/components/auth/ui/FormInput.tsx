@@ -1,4 +1,4 @@
-import React, { JSXElementConstructor } from "react";
+import React from "react";
 
 interface FormInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   unique_id: string;

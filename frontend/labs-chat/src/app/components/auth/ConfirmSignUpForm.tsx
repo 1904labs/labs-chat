@@ -3,7 +3,6 @@
 import {
   AtSymbolIcon,
   KeyIcon,
-  ExclamationCircleIcon,
   LockClosedIcon,
   ArrowLeftCircleIcon,
 } from "@heroicons/react/24/outline";
