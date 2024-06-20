@@ -18,6 +18,10 @@ const systemPrompt = await getSystemPrompt(process.env.SYSTEM_PROMPT_FILE);
 // we will need to keep track to which session this applies
 const memory = new Memory(false, systemPrompt, process.env.SYSTEM_PROMPT_FILE);
 
+export async function newChat(user_id) {
+  memory.newSession(user_id)
+}
+
 function iteratorToStream(iterator) {
   return new ReadableStream({
     async pull(controller) {
