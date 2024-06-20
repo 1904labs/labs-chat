@@ -9,6 +9,10 @@ const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 // we will need to keep track to which session this applies
 const memory = new Memory(false);
 
+export async function newChat(user_id) {
+  memory.newSession(user_id)
+}
+
 function iteratorToStream(iterator) {
   return new ReadableStream({
     async pull(controller) {
