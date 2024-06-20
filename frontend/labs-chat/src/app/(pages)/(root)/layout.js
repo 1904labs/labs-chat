@@ -1,6 +1,6 @@
 import Navbar from "@components/Navbar";
 import Sidebar from "@components/Sidebar";
-import { ClientChatHistory } from "@helpers/ClientChatHistory"
+import { ClientChatHistory } from "@helpers/ClientChatHistory";
 
 export const metadata = {
   title: "Labs Chat",

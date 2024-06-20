@@ -28,10 +28,10 @@ export class Memory {
   }
 
   /**
-  * Adds a message to the history/context of the user's current session which is tagged as from the human/user
-  * @param {string} message - The input message from the user
-  * @returns {void}
-  */
+   * Adds a message to the history/context of the user's current session which is tagged as from the human/user
+   * @param {string} message - The input message from the user
+   * @returns {void}
+   */
   addHumanMessage(message: string): void {
     // todo: add a limit to the context size, plus auto reduce context size
     if (this.verbose) {
@@ -66,9 +66,9 @@ export class Memory {
   }
 
   /**
-  * Takes the user's current session and adds the `ai_stream`'s current text to both the conversation_history and conversation_context
-  * @returns {void}
-  */
+   * Takes the user's current session and adds the `ai_stream`'s current text to both the conversation_history and conversation_context
+   * @returns {void}
+   */
   commitAIStream(): void {
     // todo: add a limit to the context size, plus auto reduce context size
     if (this.verbose) {
@@ -105,11 +105,11 @@ export class Memory {
   }
 
   /**
-  * Adds a string to the user's current session's `ai_stream`
-  * This is used to accumulate the stream for the current transaction
-  * @param {string} textDelta - The string taken from a streaming chunk, to be added to the ai's response
-  * @returns {void}
-  */
+   * Adds a string to the user's current session's `ai_stream`
+   * This is used to accumulate the stream for the current transaction
+   * @param {string} textDelta - The string taken from a streaming chunk, to be added to the ai's response
+   * @returns {void}
+   */
   accumulateAIStream(textDelta: string): void {
     if (this.verbose) {
       console.log(`Accumulating AI stream: ${textDelta}`);
@@ -118,9 +118,9 @@ export class Memory {
   }
 
   /**
-  * Clears the `ai_stream` for the user's current session
-  * @returns {void}
-  */
+   * Clears the `ai_stream` for the user's current session
+   * @returns {void}
+   */
   clearAIStream(): void {
     if (this.verbose) {
       console.log(`Clearing AI stream`);
@@ -129,10 +129,10 @@ export class Memory {
   }
 
   /**
-  * Joins a conversation context into a formatted string, mean to be saved in the conversation_history as the current context
-  * @param {ConversationContext} context - The context to be joined
-  * @returns {string} - The formatted string of the input context
-  */
+   * Joins a conversation context into a formatted string, mean to be saved in the conversation_history as the current context
+   * @param {ConversationContext} context - The context to be joined
+   * @returns {string} - The formatted string of the input context
+   */
   concatConversationText(context: ConversationContext): string {
     return context.context
       .map((segment) => {
@@ -157,10 +157,10 @@ export class Memory {
   }
 
   /**
-  * Creates a new session and replaces the current session
-  * @param {string} user_id - The user_id for the current user
-  * @returns {void}
-  */
+   * Creates a new session and replaces the current session
+   * @param {string} user_id - The user_id for the current user
+   * @returns {void}
+   */
   newSession(user_id: string): void {
     this.session = {
       session_id: crypto.randomUUID(),
@@ -178,17 +178,17 @@ export class Memory {
   }
 
   /**
-  * Returns the conversation context for the user's current session
-  * @returns {ConversationSegment[]} - The array of ConversationSegments which are passed to the Bedrock messaging api
-  */
+   * Returns the conversation context for the user's current session
+   * @returns {ConversationSegment[]} - The array of ConversationSegments which are passed to the Bedrock messaging api
+   */
   getContext(): ConversationSegment[] {
     return this.session.conversation_context.context;
   }
 
   /**
-  * Returns the system prompt for the user's current session
-  * @returns {string} - The system prompt to be used for this session
-  */
+   * Returns the system prompt for the user's current session
+   * @returns {string} - The system prompt to be used for this session
+   */
   getSystemPrompt(): string {
     return this.session.system_prompt;
   }

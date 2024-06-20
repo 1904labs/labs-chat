@@ -15,7 +15,7 @@ const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const memory = new Memory(false);
 
 export async function newChat(user_id) {
-  memory.newSession(user_id)
+  memory.newSession(user_id);
 }
 
 function iteratorToStream(iterator) {
