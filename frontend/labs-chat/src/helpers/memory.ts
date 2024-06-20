@@ -7,6 +7,9 @@ import {
   ConversationSegment,
   DynamoDBSession,
 } from "./../app/types";
+import { getSystemPrompt } from "@helpers/system-prompt";
+
+const systemPrompt = await getSystemPrompt(process.env.SYSTEM_PROMPT_FILE);
 
 export class Memory {
   private session: Session;
@@ -166,8 +169,8 @@ export class Memory {
       conversation_s3_link: "",
       conversation_history: [],
       conversation_context: { token_size: 0, context: [] },
-      system_prompt: process.env.SYSTEM_PROMPT as string,
-      system_prompt_s3_ptr: "", // todo when config is pointing to this location
+      system_prompt: systemPrompt,
+      system_prompt_s3_ptr: process.env.SYSTEM_PROMPT_FILE as string,
       session_name: "New Session",
       is_hidden: false,
       ai_stream: "",
