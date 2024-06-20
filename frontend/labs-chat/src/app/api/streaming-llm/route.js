@@ -22,6 +22,10 @@ export async function newChat(user_id) {
   memory.newSession(user_id)
 }
 
+export async function newChat(user_id) {
+  memory.newSession(user_id)
+}
+
 function iteratorToStream(iterator) {
   return new ReadableStream({
     async pull(controller) {
