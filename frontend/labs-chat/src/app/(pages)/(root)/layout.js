@@ -1,5 +1,6 @@
 import Navbar from "@components/Navbar";
 import Sidebar from "@components/Sidebar";
+import { ClientChatHistory } from "@helpers/ClientChatHistory"
 
 export const metadata = {
   title: "Labs Chat",
@@ -11,10 +12,12 @@ export default function PagesLayout({ children }) {
     <div className="flex h-screen flex-col">
       <Navbar />
       <main className="flex flex-grow flex-row overflow-y-auto">
-        <Sidebar />
-        <div className="flex flex-1 bg-[url('/assets/office_candid_background.jpeg')] bg-cover bg-[center_top] bg-no-repeat">
-          {children}
-        </div>
+        <ClientChatHistory>
+          <Sidebar />
+          <div className="flex flex-1 bg-[url('/assets/office_candid_background.jpeg')] bg-cover bg-[center_top] bg-no-repeat">
+            {children}
+          </div>
+        </ClientChatHistory>
       </main>
     </div>
   );
