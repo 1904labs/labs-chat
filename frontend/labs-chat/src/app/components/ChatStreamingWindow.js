@@ -6,6 +6,7 @@ import BotMessage from "@components/BotMessage";
 import sessionId from "@helpers/sessionId";
 import { getFormattedDateForUI } from "@helpers/dates";
 import { log } from "@actions/log";
+import { useChatHistory } from "@helpers/ClientChatHistory"
 
 function makeDefaultMessage() {
   return {
@@ -19,7 +20,7 @@ function makeDefaultMessage() {
 const ChatStreamingWindow = () => {
   const scrollRef = useRef(null);
   const [input, setInput] = useState("");
-  const [chatHistory, setChatHistory] = useState([makeDefaultMessage()]);
+  const { chatHistory, addMessageToHistory } = useChatHistory();
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [botResponse, setBotResponse] = useState("");
 
@@ -27,14 +28,6 @@ const ChatStreamingWindow = () => {
     // scroll to the bottom of the chat window
     scrollRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, botResponse]);
-
-  const addMessageToHistory = (message, callback) => {
-    if (callback) {
-      setChatHistory((prevMessages) => [...prevMessages, message], callback);
-    } else {
-      setChatHistory((prevMessages) => [...prevMessages, message]);
-    }
-  };
 
   /**
    * Generator function that streams the response body from a fetch request.
