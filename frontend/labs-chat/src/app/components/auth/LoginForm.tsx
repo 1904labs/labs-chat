@@ -17,8 +17,23 @@ export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
   return (
     <FormWrapper dispatch={dispatch} title="Log In">
-      <FormInput label="Email" type="email" unique_id="email" placeholder="Enter your email address" required IconComponent={AtSymbolIcon} />
-      <FormInput label="Password" type="password" unique_id="password" placeholder="Enter your password" minLength={6} required IconComponent={KeyIcon} />
+      <FormInput
+        label="Email"
+        type="email"
+        unique_id="email"
+        placeholder="Enter your email address"
+        required
+        IconComponent={AtSymbolIcon}
+      />
+      <FormInput
+        label="Password"
+        type="password"
+        unique_id="password"
+        placeholder="Enter your password"
+        minLength={6}
+        required
+        IconComponent={KeyIcon}
+      />
       <FormConfirmButton label="Log in" />
       <div className="flex h-8 items-end space-x-1" />
       <TextNavLink to="/auth/signUp" border>
@@ -31,6 +46,6 @@ export default function LoginForm() {
         Need to confirm a code?
       </TextNavLink>
       <FormErrorMessage message={errorMessage} />
-    </FormWrapper >
+    </FormWrapper>
   );
 }

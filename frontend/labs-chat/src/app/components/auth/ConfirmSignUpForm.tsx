@@ -21,7 +21,9 @@ export default function ConfirmSignUpForm() {
 
   return (
     <FormWrapper dispatch={dispatch} title="Confirm Sign Up">
-      <p className="text-xs text-slate-500">{"Check your email for the code"}</p>
+      <p className="text-xs text-slate-500">
+        {"Check your email for the code"}
+      </p>
       <div>
         <label
           className="mb-3 mt-5 block text-xs font-medium text-gray-900"

@@ -18,11 +18,40 @@ export default function ConfirmResetPasswordForm() {
   );
   return (
     <FormWrapper dispatch={dispatch} title="Reset Password">
-      <FormInput label="Email" type="email" unique_id="email" placeholder="Enter email" required IconComponent={AtSymbolIcon} />
-      <FormInput label="New Password" type="password" unique_id="password" placeholder="Enter password" required IconComponent={KeyIcon} />
-      <FormInput label="Confirm New Password" type="password" unique_id="password_confirm" placeholder="Enter password" required IconComponent={KeyIcon} />
-      <FormInput label="Code" type="text" unique_id="code" placeholder="Enter code" required />
-      <p className="text-xs text-slate-500">{"Enter the code you received in your email"}</p>
+      <FormInput
+        label="Email"
+        type="email"
+        unique_id="email"
+        placeholder="Enter email"
+        required
+        IconComponent={AtSymbolIcon}
+      />
+      <FormInput
+        label="New Password"
+        type="password"
+        unique_id="password"
+        placeholder="Enter password"
+        required
+        IconComponent={KeyIcon}
+      />
+      <FormInput
+        label="Confirm New Password"
+        type="password"
+        unique_id="password_confirm"
+        placeholder="Enter password"
+        required
+        IconComponent={KeyIcon}
+      />
+      <FormInput
+        label="Code"
+        type="text"
+        unique_id="code"
+        placeholder="Enter code"
+        required
+      />
+      <p className="text-xs text-slate-500">
+        {"Enter the code you received in your email"}
+      </p>
       <FormConfirmButton label="Reset Password" />
       <FormErrorMessage message={errorMessage} />
     </FormWrapper>
