@@ -1,11 +1,9 @@
 "use client";
-import { ExclamationCircleIcon, KeyIcon } from "@heroicons/react/24/outline";
+import { KeyIcon } from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleSignInWithNewPassword } from "@helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
-import FormWrapper from "@components/auth/ui/FormWrapper";
-import FormErrorMessage from "@components/auth/ui/FormErrorMessage";
-import FormInput from "@components/auth/ui/FormInput";
+import { FormWrapper, FormInput, FormErrorMessage } from "@components/auth/ui";
 
 export default function ConfirmSignInWithNewPasswordForm() {
   const [errorMessage, dispatch] = useFormState(

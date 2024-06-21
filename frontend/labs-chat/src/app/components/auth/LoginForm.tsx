@@ -5,9 +5,7 @@ import { useFormState } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
 import TextNavLink from "@components/TextNavLink";
-import FormInput from "@components/auth/ui/FormInput";
-import FormWrapper from "@components/auth/ui/FormWrapper";
-import FormErrorMessage from "@components/auth/ui/FormErrorMessage";
+import { FormWrapper, FormInput, FormErrorMessage } from "@components/auth/ui";
 
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
