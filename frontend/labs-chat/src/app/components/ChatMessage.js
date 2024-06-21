@@ -1,4 +1,4 @@
-import UserMessage from "@components/UserMessage";
+import UserMessage from "@components/UserMessage.tsx";
 import BotMessage from "@components/BotMessage";
 
 const Chatmessage = ({ messageData }) => {
