@@ -9,6 +9,8 @@ import {
 } from "./../app/types";
 import { S3_client } from "@helpers/aws";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { S3_client } from "@helpers/aws";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 export class Memory {
   private session: Session;
@@ -170,15 +172,17 @@ export class Memory {
     let bucketName;
     let convFileName;
     if (this.session.conversation_s3_link == "") {
-        bucketName = process.env.S3_BUCKET;
-        convFileName = `conversations/${user_id}/${sessionId}.json`;
-        this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
-    }
-    else {
-        const partialPath = this.session.conversation_s3_link.replace("s3://", "");
-        const firstSlash = partialPath.indexOf("/");
-        bucketName = partialPath.substring(0, firstSlash);
-        convFileName = partialPath.substring(firstSlash + 1);
+      bucketName = process.env.S3_BUCKET;
+      convFileName = `conversations/${user_id}/${sessionId}.json`;
+      this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
+    } else {
+      const partialPath = this.session.conversation_s3_link.replace(
+        "s3://",
+        "",
+      );
+      const firstSlash = partialPath.indexOf("/");
+      bucketName = partialPath.substring(0, firstSlash);
+      convFileName = partialPath.substring(firstSlash + 1);
     }
     const params = {
       Bucket: bucketName,
