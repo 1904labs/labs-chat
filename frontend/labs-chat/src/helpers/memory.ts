@@ -9,8 +9,6 @@ import {
 } from "./../app/types";
 import { S3_client } from "@helpers/aws";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { S3_client } from "@helpers/aws";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 
 export class Memory {
   private session: Session;
