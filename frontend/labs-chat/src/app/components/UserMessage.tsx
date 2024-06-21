@@ -1,20 +1,20 @@
 import { Authenticator, AuthenticatorProps } from "@aws-amplify/ui-react";
 import { AuthUser } from "aws-amplify/auth";
 
-
-const UserMessage = ({ speaker = "user", message = "", date = "", }) => {
-  function getUserInitials(name: string) {
-    if (!name) {
-      return "";
-    }
-    const [firstName, lastName] = name.split(" ");
-    return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2);
+function getUserInitials(name: string) {
+  // This method will return the initials of the user
+  // or the first two letters of the name if the user has only one name
+  if (!name) {
+    return "";
   }
+  const [firstName, lastName] = name.split(" ");
+  return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2);
+}
 
+const UserMessage = ({ speaker = "user", message = "", date = "" }) => {
   return (
     <Authenticator>
       {({ signOut, user }) => {
-        console.log("", user);
         return (
           <div className={`items flex flex-col items-end justify-end`}>
             <div
@@ -36,8 +36,8 @@ const UserMessage = ({ speaker = "user", message = "", date = "", }) => {
             </div>
             <p className="pt-2 text-sm text-1904labs-grey-300">{date}</p>
           </div>
-        );}
-      }
+        );
+      }}
     </Authenticator>
   );
 };
