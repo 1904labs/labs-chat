@@ -14,7 +14,6 @@ const NewChatButton = () => {
       },
       body: "{}",
     });
-    console.log(`newChat Response: ${JSON.stringify(response.json())}`);
 
     // clear the client chat history
     clearMessageHistory();
