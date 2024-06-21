@@ -6,7 +6,7 @@ import BotMessage from "@components/BotMessage";
 import sessionId from "@helpers/sessionId";
 import { getFormattedDateForUI } from "@helpers/dates";
 import { log } from "@actions/log";
-import { useChatHistory } from "@helpers/ClientChatHistory";
+import { useChatHistory } from "@components/ClientChatHistoryProvider";
 
 function makeDefaultMessage() {
   return {

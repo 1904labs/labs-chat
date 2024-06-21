@@ -15,7 +15,7 @@ function makeDefaultMessage() {
   };
 }
 
-export const ClientChatHistory = ({ children }) => {
+export const ClientChatHistoryProvider = ({ children }) => {
   const [chatHistory, setChatHistory] = useState([makeDefaultMessage()]);
 
   const clearMessageHistory = () => {

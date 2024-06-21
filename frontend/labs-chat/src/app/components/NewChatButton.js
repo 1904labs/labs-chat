@@ -1,7 +1,7 @@
 "use client";
 
 import { PlusCircleIcon } from "@heroicons/react/20/solid";
-import { useChatHistory } from "@helpers/ClientChatHistory";
+import { useChatHistory } from "@components/ClientChatHistoryProvider";
 
 const NewChatButton = () => {
   const { clearMessageHistory } = useChatHistory();
