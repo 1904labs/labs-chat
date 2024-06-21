@@ -4,7 +4,7 @@ import { newChat } from "@/app/api/streaming-llm/route";
 import { runWithAmplifyServerContext } from "@helpers/amplify-server-utils";
 
 export async function POST(req: Request) {
-// todo: consolidate where this code lives
+  // todo: consolidate where this code lives
   const user = await runWithAmplifyServerContext({
     nextServerContext: { cookies },
     operation: (contextSpec) => getCurrentUser(contextSpec),
