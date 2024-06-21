@@ -31,9 +31,7 @@ export const ClientChatHistory = ({ children }) => {
   };
 
   return (
-    <ChatContext.Provider
-      value={{ chatHistory, clearMessageHistory, addMessageToHistory }}
-    >
+    <ChatContext.Provider value={{ chatHistory, clearMessageHistory, addMessageToHistory }}>
       {children}
     </ChatContext.Provider>
   );
