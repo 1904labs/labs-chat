@@ -22,12 +22,8 @@ export const ClientChatHistoryProvider = ({ children }) => {
     setChatHistory([makeDefaultMessage()]);
   };
 
-  const addMessageToHistory = (message, callback) => {
-    if (callback) {
-      setChatHistory((prevMessages) => [...prevMessages, message], callback);
-    } else {
-      setChatHistory((prevMessages) => [...prevMessages, message]);
-    }
+  const addMessageToHistory = (message) => {
+    setChatHistory((prevMessages) => [...prevMessages, message]);
   };
 
   return (

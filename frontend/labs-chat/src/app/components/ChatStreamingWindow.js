@@ -138,7 +138,8 @@ const ChatStreamingWindow = () => {
       speaker: "user",
       message: input,
     };
-    addMessageToHistory(newMessage, asyncBotResponse(input));
+    addMessageToHistory(newMessage);
+    asyncBotResponse(input);
     setInput("");
   };
 
