@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "prettier": "prettier --check .",
+    "prettier:check": "prettier --check .",
     "prettier:fix": "prettier . --write",
     "prepare": "cd ../.. && husky frontend/labs-chat/.husky"
   },
