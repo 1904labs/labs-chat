@@ -189,7 +189,7 @@ export class Memory {
    * Returns the system prompt for the user's current session
    * @returns {string} - The system prompt to be used for this session
    */
-  getSystemPrompt(): string {
+  getSessionSystemPrompt(): string {
     return this.session.system_prompt;
   }
 
