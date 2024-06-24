@@ -95,6 +95,7 @@ export async function POST(req, res) {
     const stream = await getClient().send(bedrockCommand);
     const iterator = makeIterator(stream);
     const iteratorStream = iteratorToStream(iterator);
+    await memory.storeConversation();
     return new Response(iteratorStream);
   } catch (error) {
     console.error("Error:", error);
