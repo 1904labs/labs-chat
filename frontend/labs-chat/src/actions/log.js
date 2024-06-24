@@ -4,8 +4,6 @@ import DEFAULT_LOG_STRUCTURE from "@/constants/logStructure";
 import { S3_client } from "@helpers/aws";
 import { getFormattedDateForLogs } from "@helpers/dates";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
-import { authenticatedUser } from "@helpers/amplify-server-utils";
-import { cookies } from "next/headers";
 
 // Define the required fields for the communication data
 const REQUIRED_FIELDS = ["conversation_id", "user_input", "model_response"];
@@ -47,12 +45,9 @@ const logCommunication = async (args) => {
     model_response,
   };
 
-  const user = await authenticatedUser({ cookies });
-  const userID = user.userId;
-  const logFileName = `${userID}/${data_id}.json`;
-  const bucketName = process.env.S3_TRANSACTION_LOG_BUCKET;
+  const logFileName = `logs/${data_id}.json`;
   const params = {
-    Bucket: bucketName,
+    Bucket: "labs-chat-data-bucket",
     Key: logFileName,
     Body: JSON.stringify(logData),
     ContentType: "application/json",
