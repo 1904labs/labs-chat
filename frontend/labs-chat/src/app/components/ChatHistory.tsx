@@ -8,7 +8,7 @@ import React, {
 import { ChevronDownIcon } from "@heroicons/react/20/solid";
 import ChatHistoryListItem from "@components/ChatHistoryListItem";
 import { getFormattedDateForUI } from "@helpers/dates";
-import { S3Conversation, Session } from "@/app/types";
+import { Session } from "@/app/types";
 import { useChatHistory } from "@components/ClientChatHistoryProvider";
 
 interface Props {

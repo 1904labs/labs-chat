@@ -1,11 +1,7 @@
 import { dynamoDBDocumentClient } from "@helpers/aws";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { cookies } from "next/headers";
-import {
-  authenticatedUser,
-  runWithAmplifyServerContext,
-} from "@helpers/amplify-server-utils";
-import { getCurrentUser } from "aws-amplify/auth/server";
+import { authenticatedUser } from "@helpers/amplify-server-utils";
 
 export async function GET(): Promise<Response> {
   const scanLimit = 20;
