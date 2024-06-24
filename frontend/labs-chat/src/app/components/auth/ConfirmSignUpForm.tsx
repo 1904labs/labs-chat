@@ -50,8 +50,7 @@ export default function ConfirmSignUpForm() {
       <FormConfirmButton label="Confirm" />
       <FormErrorMessage message={errorMessage} />
       <ResendCodeLink />
-      <TextNavLink to="/auth/login">
-        <ArrowLeftCircleIcon className="h-6 w-6 text-form-primary" />
+      <TextNavLink to="/auth/login" LeadingIcon={ArrowLeftCircleIcon}>
         <div>Back to log in</div>
       </TextNavLink>
     </FormWrapper>

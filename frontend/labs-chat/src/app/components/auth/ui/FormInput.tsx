@@ -20,7 +20,7 @@ const FormInput = ({
     <div className="py-2">
       <div className="relative">
         <input
-          className={`peer block w-full rounded-xl border border-gray-200 py-[9px] shadow-md active:rounded-lg ${IconComponent ? "pl-12" : "pl-3"} text-sm outline-2 placeholder:text-gray-500`}
+          className={`peer block w-full border border-gray-100 py-[9px] drop-shadow-sm ${IconComponent ? "pl-12" : "pl-3"} text-sm outline-2 placeholder:text-1904labs-grey-200`}
           id={unique_id}
           type={type}
           name={unique_id}

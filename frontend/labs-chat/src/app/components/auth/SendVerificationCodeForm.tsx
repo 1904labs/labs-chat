@@ -32,8 +32,7 @@ export default function SendVerificationCodeForm() {
       />
       <FormConfirmButton label="Send" />
       <FormErrorMessage message={response?.errorMessage ?? ""} />
-      <TextNavLink to="/auth/confirmSignUp">
-        <ArrowLeftCircleIcon className="h-6 w-6 text-form-primary" />
+      <TextNavLink to="/auth/confirmSignUp" LeadingIcon={ArrowLeftCircleIcon}>
         <div>Back to confirm account</div>
       </TextNavLink>
     </FormWrapper>

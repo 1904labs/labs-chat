@@ -7,15 +7,27 @@ module.exports = {
   ],
   theme: {
     extend: {
+      backgroundSize: {
+        "3x-wide": "300% 100%",
+      },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+        "gradient-button": "linear-gradient(270deg, #5bb65b 45%, #333e48 55%)",
       },
 
+      dropShadow: {
+        "3xl": "0 35px 35px rgba(0, 0, 0, 0.25)",
+        "4xl": [
+          "0 35px 35px rgba(0, 0, 0, 0.25)",
+          "0 45px 65px rgba(0, 0, 0, 0.15)",
+        ],
+        "1904labs-text": "0 0 10px #5c696f",
+      },
       colors: {
-        "form-primary": "#62a0a5",
-        "form-primary-hover": "#4d8a8a",
+        "form-primary": "#5bb65b",
+        "form-primary-hover": "#447f44",
         "form-primary-contrast": "#fefefe",
         "1904labs-green": {
           // green color centered around 1904labs green #5BB65B

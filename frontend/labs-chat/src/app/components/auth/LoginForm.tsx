@@ -1,6 +1,10 @@
 "use client";
 
-import { AtSymbolIcon, KeyIcon } from "@heroicons/react/24/outline";
+import {
+  AtSymbolIcon,
+  KeyIcon,
+  QuestionMarkCircleIcon,
+} from "@heroicons/react/24/outline";
 import { useFormState } from "react-dom";
 import { handleSignIn } from "@/helpers/cognito-actions";
 import FormConfirmButton from "@components/FormConfirmButton";
@@ -29,15 +33,18 @@ export default function LoginForm() {
         IconComponent={KeyIcon}
       />
       <FormConfirmButton label="Log in" />
-      <div className="flex h-8 items-end space-x-1" />
+      <div className="h-6" />
       <TextNavLink to="/auth/signUp" border>
-        {"Don't have an account? "} Sign up.
+        Create an Account
       </TextNavLink>
       <TextNavLink to="/auth/resetPassword/submit" border>
         Forgot Password?
       </TextNavLink>
-      <TextNavLink to="/auth/confirmSignUp" border>
-        Need to confirm a code?
+      <TextNavLink
+        to="/auth/confirmSignUp"
+        LeadingIcon={QuestionMarkCircleIcon}
+      >
+        <div>Need to confirm a code?</div>
       </TextNavLink>
       <FormErrorMessage message={errorMessage} />
     </FormWrapper>
