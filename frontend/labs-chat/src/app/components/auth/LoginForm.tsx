@@ -10,7 +10,7 @@ import { FormWrapper, FormInput, FormErrorMessage } from "@components/auth/ui";
 export default function LoginForm() {
   const [errorMessage, dispatch] = useFormState(handleSignIn, undefined);
   return (
-    <FormWrapper dispatch={dispatch} title="Log In">
+    <FormWrapper dispatch={dispatch} title="Log in to Your Account">
       <FormInput
         label="Email"
         type="email"

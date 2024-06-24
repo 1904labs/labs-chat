@@ -48,7 +48,7 @@ export default function SignUpForm() {
       <FormConfirmButton label="Create account" />
       <div className="flex justify-center">
         <TextNavLink to="/auth/login">
-          <ArrowLeftCircleIcon className="h-6 w-6 text-blue-500" />
+          <ArrowLeftCircleIcon className="h-6 w-6 text-form-primary" />
           <div>Back to log in</div>
         </TextNavLink>
       </div>

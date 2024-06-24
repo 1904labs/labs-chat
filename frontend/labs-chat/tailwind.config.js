@@ -14,6 +14,9 @@ module.exports = {
       },
 
       colors: {
+        "form-primary": "#62a0a5",
+        "form-primary-hover": "#4d8a8a",
+        "form-primary-contrast": "#fefefe",
         "1904labs-green": {
           // green color centered around 1904labs green #5BB65B
           50: "#f1f8f1",
