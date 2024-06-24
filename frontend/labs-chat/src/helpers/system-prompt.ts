@@ -2,15 +2,14 @@ import { GetObjectCommand } from "@aws-sdk/client-s3";
 import { S3_client as client } from "@helpers/aws";
 
 // Construct file path using bucket path and the system prompt file name from the env file
-const filePath =
-  "system_prompts/chat/" + process.env.SYSTEM_PROMPT_FILE + ".json";
+const filePath = "chat/" + process.env.SYSTEM_PROMPT_FILE + ".json";
 
 export async function getSystemPrompt(fileName: string): Promise<string> {
   // Construct the file path using the bucket path and the system prompt file name from the env file
   console.log("Getting system prompt from S3: " + filePath);
   // Construct the parameters for the S3 getObject command
   const params = {
-    Bucket: process.env.S3_BUCKET,
+    Bucket: process.env.S3_SYSTEM_PROMPT_BUCKET,
     Key: filePath,
   };
 
