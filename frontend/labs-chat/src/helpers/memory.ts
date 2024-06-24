@@ -7,11 +7,16 @@ import {
   ConversationSegment,
   DynamoDBSession,
 } from "./../app/types";
+<<<<<<< feature/lc-55-new-session
 import { getSystemPrompt } from "@helpers/system-prompt";
 
 const systemPrompt = await getSystemPrompt(
   process.env.SYSTEM_PROMPT_FILE as string,
 );
+=======
+import { S3_client } from "@helpers/aws";
+import { PutObjectCommand } from "@aws-sdk/client-s3";
+>>>>>>> main
 
 export class Memory {
   private session: Session;
@@ -194,7 +199,12 @@ export class Memory {
   getSessionSystemPrompt(): string {
     return this.session.system_prompt;
   }
-
+  getHistory(): ConversationElement[] {
+    return this.session.conversation_history;
+  }
+  getSessionId(): string {
+    return this.session.session_id;
+  }
   getDynamoDBSession(): DynamoDBSession {
     return {
       session_id: this.session.session_id,
@@ -205,5 +215,37 @@ export class Memory {
       session_name: this.session.session_name,
       is_hidden: this.session.is_hidden,
     };
+  }
+  async storeConversation() {
+    const history = this.session.conversation_history;
+    const context = this.session.conversation_context;
+    const sessionId = this.session.session_id;
+    const user_id = this.session.user_id;
+    let bucketName;
+    let convFileName;
+    if (this.session.conversation_s3_link == "") {
+      bucketName = process.env.S3_CONVERSATION_STORAGE_BUCKET;
+      convFileName = `conversations/${user_id}/${sessionId}.json`;
+      this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
+    } else {
+      const partialPath = this.session.conversation_s3_link.replace(
+        "s3://",
+        "",
+      );
+      const firstSlash = partialPath.indexOf("/");
+      bucketName = partialPath.substring(0, firstSlash);
+      convFileName = partialPath.substring(firstSlash + 1);
+    }
+    const params = {
+      Bucket: bucketName,
+      Key: convFileName,
+      Body: JSON.stringify({
+        conversationHistory: history,
+        conversationContext: context,
+      }),
+      ContentType: "application/json",
+    };
+    const command = new PutObjectCommand(params);
+    await S3_client.send(command);
   }
 }
