@@ -170,7 +170,7 @@ export class Memory {
     let bucketName;
     let convFileName;
     if (this.session.conversation_s3_link == "") {
-      bucketName = process.env.S3_BUCKET;
+      bucketName = process.env.S3_CONVERSATION_STORAGE_BUCKET;
       convFileName = `conversations/${user_id}/${sessionId}.json`;
       this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
     } else {
