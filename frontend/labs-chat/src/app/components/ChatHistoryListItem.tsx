@@ -5,6 +5,7 @@ import { FunctionComponent } from "react";
 interface Props {
   title: string;
   date: string;
+  onClick: () => void;
   onEditPressed: () => void;
   onDeletePressed: () => void;
 }
@@ -12,12 +13,13 @@ interface Props {
 const ChatHistoryListItem: FunctionComponent<Props> = ({
   title,
   date,
+  onClick = () => {},
   onEditPressed = () => {},
   onDeletePressed = () => {},
 }) => {
   return (
     <li className="flex items-center justify-between">
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center space-x-2" onClick={onClick}>
         <div className="flex max-w-32 flex-col text-white lg:max-w-40">
           <p className="text-md overflow-hidden truncate font-light">{title}</p>
           <p className="text-xs font-light">{date}</p>

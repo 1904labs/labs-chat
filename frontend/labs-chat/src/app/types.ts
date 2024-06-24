@@ -22,6 +22,11 @@ export type DynamoDBSession = {
   is_hidden: boolean;
 };
 
+export type S3Conversation = {
+  conversationHistory: ConversationElement[];
+  conversationContext: ConversationContext;
+};
+
 export type ConversationSegment = {
   role: string;
   content: (ConversationContentText | ConversationContentImage)[];
