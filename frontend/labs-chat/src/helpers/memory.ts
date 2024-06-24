@@ -9,7 +9,7 @@ import {
 } from "./../app/types";
 import { getSystemPrompt } from "@helpers/system-prompt";
 
-const systemPrompt = await getSystemPrompt(process.env.SYSTEM_PROMPT_FILE);
+const systemPrompt = await getSystemPrompt(process.env.SYSTEM_PROMPT_FILE  as string);
 
 export class Memory {
   private session: Session;
