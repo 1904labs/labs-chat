@@ -3,7 +3,6 @@
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
 import { Memory } from "@helpers/memory";
-import { getSystemPrompt } from "@helpers/system-prompt";
 
 import { dynamoDBDocumentClient } from "@helpers/aws";
 
@@ -11,12 +10,13 @@ import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// aquire the system prompt from the s3 bucket
-const systemPrompt = await getSystemPrompt(process.env.SYSTEM_PROMPT_FILE);
-
 // create a memory object to store the context for the conversation
 // we will need to keep track to which session this applies
-const memory = new Memory(false, systemPrompt, process.env.SYSTEM_PROMPT_FILE);
+const memory = new Memory(false);
+
+export async function newChat(user_id) {
+  memory.newSession(user_id);
+}
 
 function iteratorToStream(iterator) {
   return new ReadableStream({
@@ -55,7 +55,7 @@ function iteratorToStream(iterator) {
         if (valueString.model_response) {
           memory.accumulateAIStream(valueString.model_response);
         }
-        valueString.system_prompt = memory.getSystemPrompt();
+        valueString.system_prompt = memory.getSessionSystemPrompt();
         controller.enqueue(JSON.stringify(valueString));
       }
     },
@@ -76,7 +76,7 @@ export async function POST(req, res) {
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
-      system: memory.getSystemPrompt,
+      system: memory.getSessionSystemPrompt,
       messages: memory.getContext(),
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };
