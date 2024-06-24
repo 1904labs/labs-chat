@@ -1,18 +1,7 @@
 "use client";
-import {
-  Context,
-  createContext,
-  Dispatch,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react";
+import { Context, createContext, useContext, useState } from "react";
 import { getFormattedDateForUI } from "@helpers/dates";
-import {
-  ConversationContentText,
-  ConversationElement,
-  S3Conversation,
-} from "@/app/types";
+import { ConversationContentText, S3Conversation } from "@/app/types";
 
 interface ChatMessage {
   id: number;
