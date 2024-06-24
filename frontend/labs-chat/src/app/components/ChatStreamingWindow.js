@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import ChatMessage from "@components/ChatMessage";
 import BotMessage from "@components/BotMessage";
+import useAuthenticatedUser from "@hooks/useAuthenticatedUser";
 import sessionId from "@helpers/sessionId";
 import { getFormattedDateForUI } from "@helpers/dates";
 import { log } from "@actions/log";
@@ -22,6 +23,7 @@ const ChatStreamingWindow = () => {
   const [chatHistory, setChatHistory] = useState([makeDefaultMessage()]);
   const [loadingResponse, setLoadingResponse] = useState(false);
   const [botResponse, setBotResponse] = useState("");
+  const authenticatedUser = useAuthenticatedUser();
 
   useEffect(() => {
     // scroll to the bottom of the chat window
@@ -158,6 +160,7 @@ const ChatStreamingWindow = () => {
             <ChatMessage
               key={`chat-messages-${messageData.speaker}-${index}`}
               messageData={messageData}
+              user={authenticatedUser}
             />
           ))}
           {loadingResponse && <BotMessage message={botResponse} date={""} />}
