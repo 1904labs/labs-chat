@@ -1,39 +1,41 @@
-interface User {
-  userAttributes: {
-    email: string;
-    sub: string;
-    name: string;
-  };
-}
+import React from "react";
+import { User } from "../types";
 
-function getName(user: User | null): string {
-  // This method will return the name of the user if it exists in the userAttributes
-  if (!user || !user.userAttributes) {
-    return "Chat User";
-  }
-  return user.userAttributes.name || user.userAttributes.email || "Chat User";
-}
-
-function getUserInitials(name): string {
-  // This method will return the initials of the user
-  // or the first two letters of the name if the user has only one name
-  //  (e.g. "John Smith" -> "JS"), (e.g. "John" -> "Jo"), (e.g. "JSmith@1904labs" -> "JS")
-
-  // if the user has no name, return an empty string
-  if (!name) {
-    return "";
-  }
-
-  const [firstName, lastName] = name.split(" ");
-  return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2);
+interface UserMessageProps {
+  message: string;
+  date: string;
+  user: User | null;
 }
 
 const UserMessage = ({
-  speaker = "user",
   message = "",
   date = "",
   user = null,
-}) => {
+}: UserMessageProps) => {
+  function getName(user: User | null): string {
+    // This method will return the name of the user if it exists in the userAttributes
+    if (!user || !user.userAttributes) {
+      return "Chat User";
+    }
+    return (
+      user.userAttributes["name"] || user.userAttributes["email"] || "Chat User"
+    );
+  }
+
+  function getUserInitials(name): string {
+    // This method will return the initials of the user
+    // or the first two letters of the name if the user has only one name
+    //  (e.g. "John Smith" -> "JS"), (e.g. "John" -> "Jo"), (e.g. "JSmith@1904labs" -> "JS")
+
+    // if the user has no name, return an empty string
+    if (!name) {
+      return "";
+    }
+
+    const [firstName, lastName] = name.split(" ");
+    return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2);
+  }
+
   const username = getName(user);
   return (
     <div className={`items flex flex-col items-end justify-end`}>
