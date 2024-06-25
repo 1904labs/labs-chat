@@ -1,6 +1,7 @@
 "use client";
 
 import {
+  ArrowLeftCircleIcon,
   AtSymbolIcon,
   ExclamationCircleIcon,
 } from "@heroicons/react/24/outline";
@@ -23,8 +24,10 @@ export default function SubmitResetPasswordForm() {
         required
       />
       <FormConfirmButton label="Submit" />
+      <TextNavLink to="/auth/login" LeadingIcon={ArrowLeftCircleIcon}>
+        <div>Back to log in</div>
+      </TextNavLink>
       <FormErrorMessage message={errorMessage} />
-      <TextNavLink to={"/auth/login"}>Back to login</TextNavLink>
     </FormWrapper>
   );
 }
