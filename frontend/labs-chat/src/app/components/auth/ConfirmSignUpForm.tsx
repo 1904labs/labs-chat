@@ -19,9 +19,6 @@ export default function ConfirmSignUpForm() {
 
   return (
     <FormWrapper dispatch={dispatch} title="Confirm Sign Up">
-      <p className="text-xs text-slate-500">
-        {"Check your email for the code"}
-      </p>
       <FormInput
         label="Email"
         type="email"
@@ -48,12 +45,12 @@ export default function ConfirmSignUpForm() {
         placeholder="Enter code"
         required
         IconComponent={KeyIcon}
+        helperText={"Check your email for the code"}
       />
       <FormConfirmButton label="Confirm" />
       <FormErrorMessage message={errorMessage} />
       <ResendCodeLink />
-      <TextNavLink to="/auth/login">
-        <ArrowLeftCircleIcon className="h-6 w-6 text-blue-500" />
+      <TextNavLink to="/auth/login" LeadingIcon={ArrowLeftCircleIcon}>
         <div>Back to log in</div>
       </TextNavLink>
     </FormWrapper>

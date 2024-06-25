@@ -8,10 +8,14 @@ interface FormWrapperProps {
 
 const FormWrapper = ({ children, dispatch, title }: FormWrapperProps) => {
   return (
-    <form action={dispatch} className="w-full max-w-80 space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`mb-3 text-2xl`}>{title}</h1>
-        <div className="w-full">{children}</div>
+    <form action={dispatch} className="w-full">
+      <div className="flex flex-1 flex-col items-center rounded-lg px-6 pb-4 pt-8">
+        <h1
+          className={`mb-8 text-center text-4xl font-bold text-1904labs-grey-500`}
+        >
+          {title}
+        </h1>
+        <div className="w-full max-w-sm">{children}</div>
       </div>
     </form>
   );
