@@ -119,6 +119,7 @@ const config: Config = {
   moduleNameMapper: pathsToModuleNameMapper({
     "@components/*": ["<rootDir>/src/app/components/*"],
     "@helpers/*": ["<rootDir>/src/helpers/*"],
+    "@types": ["<rootDir>/src/app/types"],
   }),
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
