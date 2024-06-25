@@ -1,6 +1,13 @@
 "use client";
 import React from "react";
 
+interface ButtonProps {
+  text: string;
+  onClick: () => void;
+  disable?: boolean;
+  appColor?: string;
+}
+
 const Button = ({ text, onClick, disable = false, appColor = "robotBlue" }) => {
   const buttonClassName = `py-2 px-8 bg-${appColor}-500 text-white text-xl rounded-full border-2 border-${appColor}-500 hover:bg-transparent hover:text-${appColor}-500 transition-colors duration-200`;
 

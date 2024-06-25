@@ -5,6 +5,7 @@ import { FunctionComponent } from "react";
 interface Props {
   title: string;
   date: string;
+  id?: string;
   onEditPressed: () => void;
   onDeletePressed: () => void;
 }
@@ -12,9 +13,11 @@ interface Props {
 const ChatHistoryListItem: FunctionComponent<Props> = ({
   title,
   date,
-  onEditPressed = () => {},
-  onDeletePressed = () => {},
+  onEditPressed,
+  onDeletePressed,
+  id = "",
 }) => {
+  const defaultId = title.split(" ").join("-");
   return (
     <li className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -25,10 +28,24 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
       </div>
       <div className="flex flex-row space-x-1 text-1904labs-green-500">
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white">
-          <PencilSquareIcon onClick={onEditPressed} className="h-5 w-5" />
+          <PencilSquareIcon
+            name="edit-button"
+            title={`Edit ${title}`}
+            id={`${id ? id : defaultId}-edit-button`}
+            aria-label="edit button"
+            onClick={onEditPressed}
+            className="h-5 w-5"
+          />
         </div>
         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-white">
-          <TrashIcon onClick={onDeletePressed} className="h-5 w-5" />
+          <TrashIcon
+            name="delete-button"
+            title={`Delete ${title}`}
+            id={`${id ? id : defaultId}-delete-button`}
+            aria-label="delete button"
+            onClick={onDeletePressed}
+            className="h-5 w-5"
+          />
         </div>
       </div>
     </li>
