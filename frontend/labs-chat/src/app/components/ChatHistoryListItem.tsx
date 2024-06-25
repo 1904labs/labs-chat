@@ -17,7 +17,7 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
   onDeletePressed,
   id = "",
 }) => {
-  const defaultId = title.split(" ").join("-");
+  const defaultId = id || title.split(" ").join("-");
   return (
     <li className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -31,7 +31,7 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
           <PencilSquareIcon
             name="edit-button"
             title={`Edit ${title}`}
-            id={`${id ? id : defaultId}-edit-button`}
+            id={`${defaultId}-edit-button`}
             aria-label="edit button"
             onClick={onEditPressed}
             className="h-5 w-5"
@@ -41,7 +41,7 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
           <TrashIcon
             name="delete-button"
             title={`Delete ${title}`}
-            id={`${id ? id : defaultId}-delete-button`}
+            id={`${defaultId}-delete-button`}
             aria-label="delete button"
             onClick={onDeletePressed}
             className="h-5 w-5"

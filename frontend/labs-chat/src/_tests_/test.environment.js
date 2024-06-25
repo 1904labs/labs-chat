@@ -1,7 +1,5 @@
 // test.environment.js
 
-import { fetch as fetchPolyfill } from "whatwg-fetch";
-
 const Environment = require("jest-environment-jsdom").default;
 
 module.exports = class CustomTestEnvironment extends Environment {
@@ -11,6 +9,6 @@ module.exports = class CustomTestEnvironment extends Environment {
     this.global.TextDecoder = TextDecoder;
     this.global.Response = Response;
     this.global.Request = Request;
-    this.global.fetch = fetchPolyfill;
+    this.global.fetch = fetch;
   }
 };
