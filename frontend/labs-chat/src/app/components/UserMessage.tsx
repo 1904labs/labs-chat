@@ -27,11 +27,6 @@ const UserMessage = ({
     // or the first two letters of the name if the user has only one name
     //  (e.g. "John Smith" -> "JS"), (e.g. "John" -> "Jo"), (e.g. "JSmith@1904labs" -> "JS")
 
-    // if the user has no name, return an empty string
-    if (!name) {
-      return "";
-    }
-
     const [firstName, lastName] = name.split(" ");
     return lastName ? `${firstName[0]}${lastName[0]}` : firstName.slice(0, 2);
   }
