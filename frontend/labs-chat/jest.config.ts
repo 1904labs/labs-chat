@@ -120,6 +120,8 @@ const config: Config = {
     "@components/*": ["<rootDir>/src/app/components/*"],
     "@helpers/*": ["<rootDir>/src/helpers/*"],
     "@types": ["<rootDir>/src/app/types"],
+    "@hooks/*": ["<rootDir>/src/app/hooks/*"],
+    "@actions/*": ["<rootDir>/src/actions/*"],
   }),
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader

@@ -2,7 +2,7 @@
 import { Amplify } from "aws-amplify";
 import { authConfig } from "@/app/amplify-cognito-config";
 
-export default function AmplifyClientProvider() {
+const AmplifyClientProvider = () => {
   Amplify.configure(
     {
       Auth: authConfig,
@@ -11,4 +11,6 @@ export default function AmplifyClientProvider() {
   );
 
   return null;
-}
+};
+
+export default AmplifyClientProvider;

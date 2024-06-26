@@ -5,7 +5,7 @@ import { FunctionComponent } from "react";
 interface Props {
   title: string;
   date: string;
-  id?: string;
+  id: string;
   onEditPressed: () => void;
   onDeletePressed: () => void;
 }
@@ -15,9 +15,8 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
   date,
   onEditPressed,
   onDeletePressed,
-  id = "",
+  id,
 }) => {
-  const defaultId = id || title.split(" ").join("-");
   return (
     <li className="flex items-center justify-between">
       <div className="flex items-center space-x-2">
@@ -31,7 +30,7 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
           <PencilSquareIcon
             name="edit-button"
             title={`Edit ${title}`}
-            id={`${defaultId}-edit-button`}
+            id={`${id}-edit-button`}
             aria-label="edit button"
             onClick={onEditPressed}
             className="h-5 w-5"
@@ -41,7 +40,7 @@ const ChatHistoryListItem: FunctionComponent<Props> = ({
           <TrashIcon
             name="delete-button"
             title={`Delete ${title}`}
-            id={`${defaultId}-delete-button`}
+            id={`${id}-delete-button`}
             aria-label="delete button"
             onClick={onDeletePressed}
             className="h-5 w-5"

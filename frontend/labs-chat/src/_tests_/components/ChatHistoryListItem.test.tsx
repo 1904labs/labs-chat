@@ -14,6 +14,7 @@ describe("ChatHistoryListItem tests", () => {
         onEditPressed={() => {}}
         title={title}
         date={date}
+        id={"test-id"}
       />,
     );
 
@@ -29,6 +30,7 @@ describe("ChatHistoryListItem tests", () => {
         title="Session 1"
         date="2022-01-01"
         onEditPressed={onEditPressed}
+        id={"test-id"}
       />,
     );
     const editButton = getByLabelText("edit button");
@@ -46,6 +48,7 @@ describe("ChatHistoryListItem tests", () => {
         title="Session 1"
         date="2022-01-01"
         onDeletePressed={onDeletePressed}
+        id={"test-id"}
       />,
     );
     const deleteButton = getByLabelText("delete button");
@@ -64,6 +67,7 @@ describe("ChatHistoryListItem tests", () => {
         onEditPressed={() => {}}
         title={title}
         date={date}
+        id={"test-id"}
       />,
     );
 
@@ -100,10 +104,11 @@ describe("ChatHistoryListItem tests", () => {
         onEditPressed={() => {}}
         title={title}
         date={date}
+        id={"test-id"}
       />,
     );
-    const editButton = container.querySelector(`#Session-1-edit-button`);
-    const deleteButton = container.querySelector(`#Session-1-delete-button`);
+    const editButton = container.querySelector(`#test-id-edit-button`);
+    const deleteButton = container.querySelector(`#test-id-delete-button`);
 
     expect(editButton).toBeInTheDocument();
     expect(deleteButton).toBeInTheDocument();

@@ -27,21 +27,6 @@ describe("PromptBox", () => {
     expect(input.innerHTML).toBe("");
   });
 
-  test("state is set for the PromptBox on submit", () => {
-    const handleSubmit = jest.fn();
-    const setState = jest.fn();
-    jest.spyOn(React, "useState").mockReturnValueOnce(["", setState]);
-
-    const { getByPlaceholderText } = render(
-      <PromptBox handleSubmit={handleSubmit} />,
-    );
-
-    const input = getByPlaceholderText("Enter your prompt");
-    fireEvent.keyDown(input, { key: "Enter" });
-
-    expect(setState).toHaveBeenCalledTimes(1);
-  });
-
   test("submit button click calls the subnit function", () => {
     const handleSubmit = jest.fn();
     const { getByText } = render(<PromptBox handleSubmit={handleSubmit} />);
@@ -50,6 +35,17 @@ describe("PromptBox", () => {
     fireEvent.click(submitButton);
 
     expect(handleSubmit).toHaveBeenCalledTimes(1);
+  });
+
+  test("when enter your prompt input is changed, it updates the input value", () => {
+    const { getByPlaceholderText } = render(
+      <PromptBox handleSubmit={() => {}} />,
+    );
+    const input = getByPlaceholderText("Enter your prompt") as HTMLInputElement;
+
+    fireEvent.change(input, { target: { value: "New prompt" } });
+
+    expect(input.value).toBe("New prompt");
   });
 
   test("shows error message when error prop is passed", () => {

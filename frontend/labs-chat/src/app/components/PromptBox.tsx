@@ -19,7 +19,7 @@ const PromptBox = ({
   disable,
   appColor = "robotBlue",
 }: PromptBoxProps) => {
-  const [inputValue, setInputValue] = React.useState("");
+  const [inputValue, setInputValue] = useState("");
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSubmit(inputValue);
@@ -42,7 +42,7 @@ const PromptBox = ({
         <input
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e?.target?.value)}
+          onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeHolderText || "Enter your prompt"}
           className="mb-4 w-full rounded bg-white px-6 py-4 text-gray-900 placeholder-gray-500 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"
