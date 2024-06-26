@@ -28,7 +28,7 @@ const ChatStreamingWindow = () => {
 
   useEffect(() => {
     // scroll to the bottom of the chat window
-    scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    scrollRef.current.scrollIntoView({ behavior: "smooth" });
   }, [chatHistory, botResponse]);
 
   /**
@@ -148,7 +148,10 @@ const ChatStreamingWindow = () => {
   return (
     <div className="h-full w-full overflow-y-auto bg-white bg-opacity-90 lg:w-full 2xl:w-2/3">
       <div className="flex h-full flex-grow flex-col justify-between">
-        <div className="flex flex-grow flex-col gap-6 overflow-y-scroll p-4">
+        <div
+          className="flex flex-grow flex-col gap-6 overflow-y-scroll p-4"
+          id="conversation-window"
+        >
           {/* Loop over messages */}
           {chatHistory.map((messageData, index) => (
             <ChatMessage

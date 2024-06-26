@@ -2,6 +2,15 @@
 import React, { useState } from "react";
 import Button from "@components/Button";
 
+interface PromptBoxProps {
+  handleSubmit: (inputValue: string) => void;
+  placeHolderText?: string;
+  error?: { message: string };
+  labelText?: string;
+  disable?: boolean;
+  appColor?: string;
+}
+
 const PromptBox = ({
   handleSubmit,
   placeHolderText,
@@ -9,7 +18,7 @@ const PromptBox = ({
   labelText,
   disable,
   appColor = "robotBlue",
-}) => {
+}: PromptBoxProps) => {
   const [inputValue, setInputValue] = useState("");
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
@@ -33,7 +42,7 @@ const PromptBox = ({
         <input
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e?.target?.value)}
+          onChange={(e) => setInputValue(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder={placeHolderText || "Enter your prompt"}
           className="mb-4 w-full rounded bg-white px-6 py-4 text-gray-900 placeholder-gray-500 shadow focus:outline-none focus:ring-2 focus:ring-blue-500"

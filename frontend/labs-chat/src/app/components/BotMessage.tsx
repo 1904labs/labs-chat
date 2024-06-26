@@ -1,3 +1,10 @@
+import React from "react";
+
+interface BotMessageProps {
+  message?: string;
+  date?: string;
+}
+
 const BotMessage = ({ message = "", date = "" }) => {
   return (
     <div className={`items flex flex-col items-start justify-start`}>

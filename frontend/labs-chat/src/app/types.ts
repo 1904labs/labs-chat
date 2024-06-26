@@ -46,3 +46,14 @@ export type ConversationContentImage = {
   type: string;
   path: string;
 };
+
+export type User = {
+  userAttributes:
+    | {
+        email: string;
+        sub: string;
+        name: string;
+      }
+    | null
+    | {};
+};

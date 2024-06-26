@@ -6,7 +6,8 @@
       "@components/*": ["./src/app/components/*"],
       "@helpers/*": ["./src/helpers/*"],
       "@hooks/*": ["./src/app/hooks/*"],
-      "@images/*": ["./src/app/images/*"]
+      "@images/*": ["./src/app/images/*"],
+      "@types": ["./src/app/types"],
     },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -25,7 +26,8 @@
         "name": "next"
       }
     ],
-    "strictNullChecks": true
+    "strictNullChecks": true,
+    "types": ["node", "jest", "@testing-library/jest-dom"],
   },
   "include": [
     "next-env.d.ts",
