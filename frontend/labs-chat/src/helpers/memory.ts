@@ -8,13 +8,14 @@ import {
   DynamoDBSession,
 } from "@/app/types";
 
-import { getSystemPrompt } from "@helpers/system-prompt";
+import { systemPrompt } from "@helpers/system-prompt";
 import { S3_client } from "@helpers/aws";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { extractS3BucketAndKey } from "@helpers/s3";
 
-const systemPrompt = await getSystemPrompt(
-  process.env.SYSTEM_PROMPT_FILE as string,
-);
+// create a memory object to store the context for the conversation
+// we will need to keep track to which session this applies
+export let MEMORY: Memory;
 
 export class Memory {
   private session: Session;
@@ -24,9 +25,6 @@ export class Memory {
 
   constructor(verbose = false) {
     // todo in the future this should contain sessions for multiple users
-    // add this.sessions as a hashtable?
-    // also the session shouldn't be created here. will let LC-44 change this?
-    this.newSession("test_user");
     this.verbose = verbose;
     this.human_role = "user";
     this.ai_role = "assistant";
@@ -182,6 +180,10 @@ export class Memory {
     };
   }
 
+  loadSession(session: Session): void {
+    this.session = session;
+  }
+
   /**
    * Returns the conversation context for the user's current session
    * @returns {ConversationSegment[]} - The array of ConversationSegments which are passed to the Bedrock messaging api
@@ -200,8 +202,8 @@ export class Memory {
   getHistory(): ConversationElement[] {
     return this.session.conversation_history;
   }
-  getSessionId(): string {
-    return this.session.session_id;
+  getSession(): Session {
+    return this.session;
   }
   getDynamoDBSession(): DynamoDBSession {
     return {
@@ -219,20 +221,18 @@ export class Memory {
     const context = this.session.conversation_context;
     const sessionId = this.session.session_id;
     const user_id = this.session.user_id;
-    let bucketName;
-    let convFileName;
+    let bucketName: string;
+    let convFileName: string;
     if (this.session.conversation_s3_link == "") {
-      bucketName = process.env.S3_CONVERSATION_STORAGE_BUCKET;
+      bucketName = process.env.S3_CONVERSATION_STORAGE_BUCKET || "";
       convFileName = `conversations/${user_id}/${sessionId}.json`;
       this.session.conversation_s3_link = `s3://${bucketName}/${convFileName}`;
     } else {
-      const partialPath = this.session.conversation_s3_link.replace(
-        "s3://",
-        "",
+      const pathComponents = extractS3BucketAndKey(
+        this.session.conversation_s3_link,
       );
-      const firstSlash = partialPath.indexOf("/");
-      bucketName = partialPath.substring(0, firstSlash);
-      convFileName = partialPath.substring(firstSlash + 1);
+      bucketName = pathComponents.Bucket;
+      convFileName = pathComponents.Key;
     }
     const params = {
       Bucket: bucketName,
@@ -246,4 +246,15 @@ export class Memory {
     const command = new PutObjectCommand(params);
     await S3_client.send(command);
   }
+}
+
+// Set the value of MEMORY globally, a single time.
+// https://stackoverflow.com/a/75273986
+if (process.env.NODE_ENV === "production") {
+  MEMORY = new Memory(false);
+} else {
+  if (!global.memory) {
+    global.memory = new Memory(false);
+  }
+  MEMORY = global.memory;
 }

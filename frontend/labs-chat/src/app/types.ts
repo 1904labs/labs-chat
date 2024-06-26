@@ -22,11 +22,6 @@ export type DynamoDBSession = {
   is_hidden: boolean;
 };
 
-export type S3Conversation = {
-  conversationHistory: ConversationElement[];
-  conversationContext: ConversationContext;
-};
-
 export type ConversationSegment = {
   role: string;
   content: (ConversationContentText | ConversationContentImage)[];
@@ -50,4 +45,13 @@ export type ConversationContentText = {
 export type ConversationContentImage = {
   type: string;
   path: string;
+};
+
+export type S3Conversation = {
+  conversationHistory: ConversationElement[];
+  conversationContext: ConversationContext;
+};
+
+export type S3SystemPrompt = {
+  prompt: string;
 };

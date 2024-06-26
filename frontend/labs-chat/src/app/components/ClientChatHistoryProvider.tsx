@@ -1,7 +1,7 @@
 "use client";
 import { Context, createContext, useContext, useState } from "react";
 import { getFormattedDateForUI } from "@helpers/dates";
-import { ConversationContentText, S3Conversation } from "@/app/types";
+import { ConversationContentText, ConversationElement } from "@/app/types";
 
 interface ChatMessage {
   id: number;
@@ -14,7 +14,7 @@ interface ChatHistoryHandler {
   chatHistory: ChatMessage[];
   clearMessageHistory: () => void;
   addMessageToHistory: (message: ChatMessage) => void;
-  loadHistory: (conversation: S3Conversation) => void;
+  loadHistory: (conversation: ConversationElement[]) => void;
 }
 
 // @ts-ignore
@@ -43,10 +43,10 @@ export const ClientChatHistoryProvider = ({ children }) => {
     setChatHistory((prevMessages) => [...prevMessages, message]);
   };
 
-  const loadHistory = (conversation: S3Conversation): void => {
+  const loadHistory = (conversation: ConversationElement[]): void => {
     let id = -1;
     setChatHistory(
-      conversation.conversationHistory.map((e) => {
+      conversation.map((e) => {
         id++;
         return {
           id,

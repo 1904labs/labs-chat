@@ -3,7 +3,12 @@ import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import { dynamoDBDocumentClient } from "@helpers/aws";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { S3Conversation } from "@/app/types";
+import {
+  ConversationContext,
+  ConversationElement,
+  S3Conversation,
+  Session,
+} from "@/app/types";
 import { getS3Object } from "@helpers/s3";
 
 export async function GET(req: NextRequest) {
@@ -23,12 +28,17 @@ export async function GET(req: NextRequest) {
       ExpressionAttributeNames: {
         "#uid": "user_id",
         "#sid": "session_id",
+        "#s3link": "conversation_s3_link",
+        "#name": "session_name",
+        "#prompt": "system_prompt_s3_ptr",
+        "#hidden": "is_hidden",
+        "#ts": "timestamp",
       },
       ExpressionAttributeValues: {
         ":user_id": user!.userId,
         ":session_id": sessionId,
       },
-      ProjectionExpression: "conversation_s3_link",
+      ProjectionExpression: "#uid, #sid, #s3link, #name, #prompt, #hidden, #ts",
     }),
   );
 
@@ -36,9 +46,14 @@ export async function GET(req: NextRequest) {
     throw new Error("No session found");
   }
 
+  const session = res.Items![0] as Session;
+
   const chatHistory = await getS3Object<S3Conversation>(
     res.Items![0]["conversation_s3_link"],
   );
 
-  return Response.json(chatHistory);
+  session.conversation_history = chatHistory.conversationHistory;
+  session.conversation_context = chatHistory.conversationContext;
+
+  return Response.json(session);
 }

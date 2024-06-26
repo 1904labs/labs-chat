@@ -10,6 +10,7 @@ import ChatHistoryListItem from "@components/ChatHistoryListItem";
 import { getFormattedDateForUI } from "@helpers/dates";
 import { Session } from "@/app/types";
 import { useChatHistory } from "@components/ClientChatHistoryProvider";
+import { MEMORY } from "@helpers/memory";
 
 interface Props {
   forceDisable: boolean;
@@ -30,12 +31,14 @@ const ChatHistory: FunctionComponent<Props> = ({ forceDisable }) => {
   }, []);
 
   async function handleSessionClick(session_id: string) {
-    await fetch("/api/chatHistory?sessionId=" + session_id)
-      .then((r) => r.json())
-      .then((rj) => {
-        loadHistory(rj);
-      })
-      .catch((e) => console.error(e));
+    try {
+      const response = await fetch("/api/chatSession?sessionId=" + session_id);
+      const session: Session = await response.json();
+      MEMORY.loadSession(session);
+      loadHistory(session.conversation_history);
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   useEffect(() => {
