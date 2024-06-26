@@ -46,3 +46,12 @@ export type ConversationContentImage = {
   type: string;
   path: string;
 };
+
+export type S3Conversation = {
+  conversationHistory: ConversationElement[];
+  conversationContext: ConversationContext;
+};
+
+export type S3SystemPrompt = {
+  prompt: string;
+};

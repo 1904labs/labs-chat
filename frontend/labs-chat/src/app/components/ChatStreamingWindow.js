@@ -7,16 +7,10 @@ import useAuthenticatedUser from "@hooks/useAuthenticatedUser";
 import sessionId from "@helpers/sessionId";
 import { getFormattedDateForUI } from "@helpers/dates";
 import { log } from "@actions/log";
-import { useChatHistory } from "@components/ClientChatHistoryProvider";
-
-function makeDefaultMessage() {
-  return {
-    id: 0,
-    speaker: "bot",
-    message: "Hello! How can I help you today?",
-    date: getFormattedDateForUI(new Date()),
-  };
-}
+import {
+  makeDefaultMessage,
+  useChatHistory,
+} from "@components/ClientChatHistoryProvider";
 
 const ChatStreamingWindow = () => {
   const scrollRef = useRef(null);

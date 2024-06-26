@@ -2,21 +2,13 @@
 
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
-import { Memory } from "@helpers/memory";
-
+import { MEMORY } from "@helpers/memory";
 import { dynamoDBDocumentClient } from "@helpers/aws";
-
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
+import { authenticatedUser } from "@helpers/amplify-server-utils";
+import { cookies } from "next/headers";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// create a memory object to store the context for the conversation
-// we will need to keep track to which session this applies
-const memory = new Memory(false);
-
-export async function newChat(user_id) {
-  memory.newSession(user_id);
-}
 
 function iteratorToStream(iterator) {
   return new ReadableStream({
@@ -34,12 +26,15 @@ function iteratorToStream(iterator) {
 
       if (done) {
         // append the final message to the context
-        memory.commitAIStream();
+        MEMORY.commitAIStream();
+
+        // save conversation to s3
+        await MEMORY.storeConversation();
 
         // save to dynamodb
         const command = new PutCommand({
           TableName: process.env.DYNAMODB_TABLE_NAME,
-          Item: memory.getDynamoDBSession(),
+          Item: MEMORY.getDynamoDBSession(),
         });
         await dynamoDBDocumentClient.send(command);
 
@@ -53,9 +48,9 @@ function iteratorToStream(iterator) {
         // append the chunk to the ai stream accumulator
         const valueString = JSON.parse(cleanChunk);
         if (valueString.model_response) {
-          memory.accumulateAIStream(valueString.model_response);
+          MEMORY.accumulateAIStream(valueString.model_response);
         }
-        valueString.system_prompt = memory.getSessionSystemPrompt();
+        valueString.system_prompt = MEMORY.getSessionSystemPrompt();
         controller.enqueue(JSON.stringify(valueString));
       }
     },
@@ -68,16 +63,29 @@ async function* makeIterator(stream) {
   }
 }
 
+/*
+ If a session isn't found, use the current user to create a new one.
+ This typically happens when a user starts a conversation without clicking
+ New Chat or loading a past session.
+*/
+async function ensureSession() {
+  if (!MEMORY.getSession()) {
+    const user = await authenticatedUser({ cookies });
+    MEMORY.newSession(user.userId);
+  }
+}
+
 export async function POST(req, res) {
+  await ensureSession();
   try {
     const request = await req.json();
     //append the human message to the context
-    memory.addHumanMessage(request.input);
+    MEMORY.addHumanMessage(request.input);
     const body = {
       anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
       max_tokens: 4096, // same as above
-      system: memory.getSessionSystemPrompt,
-      messages: memory.getContext(),
+      system: MEMORY.getSessionSystemPrompt,
+      messages: MEMORY.getContext(),
       temperature: parseFloat(process.env.MODEL_TEMPERATURE),
     };
     const jsonBody = JSON.stringify(body);
@@ -95,7 +103,6 @@ export async function POST(req, res) {
     const stream = await getClient().send(bedrockCommand);
     const iterator = makeIterator(stream);
     const iteratorStream = iteratorToStream(iterator);
-    await memory.storeConversation();
     return new Response(iteratorStream);
   } catch (error) {
     console.error("Error:", error);
