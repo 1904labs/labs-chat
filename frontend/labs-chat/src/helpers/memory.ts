@@ -7,13 +7,14 @@ import {
   ConversationSegment,
   DynamoDBSession,
 } from "@/app/types";
+import { DEFAULT_CHAT_AGENT } from "@/app/api/agents";
 
 import { getSystemPrompt } from "@helpers/system-prompt";
 import { S3_client } from "@helpers/aws";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 
-const systemPrompt = await getSystemPrompt(
-  process.env.SYSTEM_PROMPT_FILE as string,
+const chatSystemPrompt = await getSystemPrompt(
+  DEFAULT_CHAT_AGENT.system_prompt_file,
 );
 
 export class Memory {
@@ -174,7 +175,7 @@ export class Memory {
       conversation_s3_link: "",
       conversation_history: [],
       conversation_context: { token_size: 0, context: [] },
-      system_prompt: systemPrompt,
+      system_prompt: chatSystemPrompt,
       system_prompt_s3_ptr: process.env.SYSTEM_PROMPT_FILE as string,
       session_name: "New Session",
       is_hidden: false,
