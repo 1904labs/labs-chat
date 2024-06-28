@@ -7,6 +7,7 @@ import { dynamoDBDocumentClient } from "@helpers/aws";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { authenticatedUser } from "@helpers/amplify-server-utils";
 import { cookies } from "next/headers";
+import { getConfiguredSystemPrompt } from "@helpers/system-prompt";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -71,7 +72,8 @@ async function* makeIterator(stream) {
 async function ensureSession() {
   if (!MEMORY.getSession()) {
     const user = await authenticatedUser({ cookies });
-    MEMORY.newSession(user.userId);
+    const system_prompt = getConfiguredSystemPrompt();
+    MEMORY.newSession(user.userId, system_prompt);
   }
 }
 

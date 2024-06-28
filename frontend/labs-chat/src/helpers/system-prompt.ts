@@ -1,15 +1,23 @@
+"use server";
 import { getS3Object } from "@helpers/s3";
 import { S3SystemPrompt } from "@/app/types";
 
-export let systemPrompt: string;
-getSystemPrompt(process.env.SYSTEM_PROMPT_FILE as string).then(
-  (prompt: string) => {
-    systemPrompt = prompt;
-  },
-);
+let systemPrompt: string;
 
-async function getSystemPrompt(fileName: string): Promise<string> {
-  // Construct the file path using the bucket path and the system prompt file name from the env file
+export async function getConfiguredSystemPrompt(): Promise<string> {
+  if (systemPrompt) {
+    return systemPrompt;
+  }
+  systemPrompt = await getSystemPromptUsingFileName(
+    process.env.SYSTEM_PROMPT_FILE!,
+  );
+  return systemPrompt;
+}
+
+export async function getSystemPromptUsingFileName(
+  fileName: string,
+): Promise<string> {
+  // Construct the file path using the bucket path and the system prompt file name from the env file.
   const filePath = `s3://${process.env.S3_SYSTEM_PROMPT_BUCKET}/chat/${fileName}.json`;
   console.log("Getting system prompt from S3: " + filePath);
   try {

@@ -8,7 +8,7 @@ import {
   DynamoDBSession,
 } from "@/app/types";
 
-import { systemPrompt } from "@helpers/system-prompt";
+import { getConfiguredSystemPrompt } from "@helpers/system-prompt";
 import { S3_client } from "@helpers/aws";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { extractS3BucketAndKey } from "@helpers/s3";
@@ -164,7 +164,7 @@ export class Memory {
    * @param {string} user_id - The user_id for the current user
    * @returns {void}
    */
-  newSession(user_id: string): void {
+  newSession(user_id: string, system_prompt: string): void {
     this.session = {
       session_id: crypto.randomUUID(),
       user_id: user_id,
@@ -172,7 +172,7 @@ export class Memory {
       conversation_s3_link: "",
       conversation_history: [],
       conversation_context: { token_size: 0, context: [] },
-      system_prompt: systemPrompt,
+      system_prompt: system_prompt,
       system_prompt_s3_ptr: process.env.SYSTEM_PROMPT_FILE as string,
       session_name: "New Session",
       is_hidden: false,
