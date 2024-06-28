@@ -1,3 +1,11 @@
+export type AgentConfiguration = {
+  system_prompt_file: string;
+  model: string;
+  additional_request_parameters?: {
+    [key: string]: string | number;
+  };
+};
+
 export type Session = {
   session_id: string;
   user_id: string;
