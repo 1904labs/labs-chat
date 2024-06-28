@@ -1,3 +1,3 @@
-export { default as DEFAULT_CHAT_AGENT } from "./default_chat";
-export { default as POLICY_RETRIEVAL_AGENT } from "./policy_retrieval_kb";
-export { default as ROUTING_AGENT } from "./routing";
+export { default as DEFAULT_CHAT_AGENT } from "./defaultChat/route";
+export { default as POLICY_RETRIEVAL_AGENT } from "./policyRetrieval/route";
+export { default as ROUTING_AGENT } from "./routing/route";
