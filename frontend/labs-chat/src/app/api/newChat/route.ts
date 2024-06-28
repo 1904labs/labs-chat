@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { authenticatedUser } from "@helpers/amplify-server-utils";
-import { MEMORY } from "@helpers/memory";
+import { getMemory } from "@helpers/memory";
 import { getConfiguredSystemPrompt } from "@helpers/system-prompt";
 
 export async function POST(req: Request) {
@@ -8,7 +8,8 @@ export async function POST(req: Request) {
   const user = await authenticatedUser({ cookies });
   try {
     const systemPrompt = await getConfiguredSystemPrompt();
-    MEMORY.newSession(user!.userId, systemPrompt);
+
+    (await getMemory()).newSession(user!.userId, systemPrompt);
     return Response.json({ message: "Success" }, { status: 200 });
   } catch (error) {
     return Response.json(

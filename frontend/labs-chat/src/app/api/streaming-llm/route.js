@@ -2,7 +2,7 @@
 
 import { InvokeModelWithResponseStreamCommand } from "@aws-sdk/client-bedrock-runtime";
 import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
-import { MEMORY } from "@helpers/memory";
+import { getMemory } from "@helpers/memory";
 import { dynamoDBDocumentClient } from "@helpers/aws";
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 import { authenticatedUser } from "@helpers/amplify-server-utils";
@@ -11,7 +11,7 @@ import { getConfiguredSystemPrompt } from "@helpers/system-prompt";
 
 const fakeSleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function iteratorToStream(iterator) {
+function iteratorToStream(iterator, MEMORY) {
   return new ReadableStream({
     async pull(controller) {
       // stream returns an interator that is not
@@ -69,7 +69,7 @@ async function* makeIterator(stream) {
  This typically happens when a user starts a conversation without clicking
  New Chat or loading a past session.
 */
-async function ensureSession() {
+async function ensureSession(MEMORY) {
   if (!MEMORY.getSession()) {
     const user = await authenticatedUser({ cookies });
     const system_prompt = getConfiguredSystemPrompt();
@@ -78,7 +78,8 @@ async function ensureSession() {
 }
 
 export async function POST(req, res) {
-  await ensureSession();
+  const MEMORY = await getMemory();
+  await ensureSession(MEMORY);
   try {
     const request = await req.json();
     //append the human message to the context
@@ -104,7 +105,7 @@ export async function POST(req, res) {
     );
     const stream = await getClient().send(bedrockCommand);
     const iterator = makeIterator(stream);
-    const iteratorStream = iteratorToStream(iterator);
+    const iteratorStream = iteratorToStream(iterator, MEMORY);
     return new Response(iteratorStream);
   } catch (error) {
     console.error("Error:", error);

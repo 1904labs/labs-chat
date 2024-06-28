@@ -1,3 +1,4 @@
+"use server";
 import {
   Session,
   ConversationElement,
@@ -15,9 +16,9 @@ import { extractS3BucketAndKey } from "@helpers/s3";
 
 // create a memory object to store the context for the conversation
 // we will need to keep track to which session this applies
-export let MEMORY: Memory;
+let MEMORY: Memory;
 
-export class Memory {
+class Memory {
   private session: Session;
   private verbose: boolean;
   private human_role: string;
@@ -257,4 +258,8 @@ if (process.env.NODE_ENV === "production") {
     global.memory = new Memory(false);
   }
   MEMORY = global.memory;
+}
+
+export async function getMemory() {
+  return MEMORY;
 }

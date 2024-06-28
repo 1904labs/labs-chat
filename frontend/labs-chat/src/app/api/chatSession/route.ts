@@ -10,6 +10,7 @@ import {
   Session,
 } from "@/app/types";
 import { getS3Object } from "@helpers/s3";
+import { getMemory } from "@/helpers/memory";
 
 export async function GET(req: NextRequest) {
   const sessionId = req.nextUrl.searchParams.get("sessionId") || "";
@@ -54,6 +55,7 @@ export async function GET(req: NextRequest) {
 
   session.conversation_history = chatHistory.conversationHistory;
   session.conversation_context = chatHistory.conversationContext;
-
+  const mem = await getMemory();
+  mem.loadSession(session);
   return Response.json(session);
 }
