@@ -5,6 +5,7 @@ import { formatClaude3DataChunk, getClient } from "@helpers/bedrock";
 import { Memory } from "@helpers/memory";
 
 import { dynamoDBDocumentClient } from "@helpers/aws";
+import { DEFAULT_CHAT_AGENT } from "@/app/api/agents";
 
 import { PutCommand } from "@aws-sdk/lib-dynamodb";
 
@@ -74,11 +75,9 @@ export async function POST(req, res) {
     //append the human message to the context
     memory.addHumanMessage(request.input);
     const body = {
-      anthropic_version: "bedrock-2023-05-31", // todo move to config (yaml merge with env) treat these as kwargs so individual model cards can define their settings
-      max_tokens: 4096, // same as above
       system: memory.getSessionSystemPrompt,
       messages: memory.getContext(),
-      temperature: parseFloat(process.env.MODEL_TEMPERATURE),
+      ...DEFAULT_CHAT_AGENT.additional_request_parameters,
     };
     const jsonBody = JSON.stringify(body);
     const encodedBody = new TextEncoder().encode(jsonBody);
